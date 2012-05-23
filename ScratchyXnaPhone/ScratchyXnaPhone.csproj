@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{76704345-239A-4884-A450-5C1AF4017D3E}</ProjectGuid>
+    <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">Windows Phone</Platform>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ScratchyXNAPhone</RootNamespace>
+    <AssemblyName>ScratchyXNAPhone</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
+    <XnaPlatform>Windows Phone</XnaPlatform>
+    <XnaProfile>Reach</XnaProfile>
+    <XnaCrossPlatformGroupID>068863ff-8b8c-415e-b33c-138a5162ff77</XnaCrossPlatformGroupID>
+    <XnaOutputType>Library</XnaOutputType>
+    <XnaRefreshLevel>1</XnaRefreshLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Windows Phone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Windows Phone\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;WINDOWS_PHONE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <XnaCompressContent>false</XnaCompressContent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Windows Phone' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Windows Phone\Release</OutputPath>
+    <DefineConstants>TRACE;WINDOWS_PHONE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <XnaCompressContent>false</XnaCompressContent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework" />
+    <Reference Include="Microsoft.Xna.Framework.Game" />
+    <Reference Include="Microsoft.Xna.Framework.Graphics" />
+    <Reference Include="Microsoft.Xna.Framework.GamerServices" />
+    <Reference Include="Microsoft.Xna.Framework.Input.Touch" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Net" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\ScratchyXna\Data\PlayerData.cs">
+      <Link>Data\PlayerData.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Enumerations\Alignment.cs">
+      <Link>Enumerations\Alignment.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Enumerations\BackButtonBehaviours.cs">
+      <Link>Enumerations\BackButtonBehaviours.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Enumerations\EnumerationExtensions.cs">
+      <Link>Enumerations\EnumerationExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Enumerations\GamePlatforms.cs">
+      <Link>Enumerations\GamePlatforms.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Enumerations\GridStyles.cs">
+      <Link>Enumerations\GridStyles.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Input\KeyboardInput.cs">
+      <Link>Input\KeyboardInput.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Input\MouseInput.cs">
+      <Link>Input\MouseInput.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Input\TouchInput.cs">
+      <Link>Input\TouchInput.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Scenes\Scene.cs">
+      <Link>Scenes\Scene.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\ScratchyObject.cs">
+      <Link>ScratchyObject.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\ScratchyXnaGame.cs">
+      <Link>ScratchyXnaGame.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Sprites\Costume.cs">
+      <Link>Sprites\Costume.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Sprites\IDrawable.cs">
+      <Link>Sprites\IDrawable.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Sprites\Sprite.cs">
+      <Link>Sprites\Sprite.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Text\Text.cs">
+      <Link>Text\Text.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Text\TextAnimations.cs">
+      <Link>Text\TextAnimations.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Timer.cs">
+      <Link>Timer.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\XnaHelpers\LinqExtensions.cs">
+      <Link>XnaHelpers\LinqExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\XnaHelpers\RectangleF.cs">
+      <Link>XnaHelpers\RectangleF.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
+  <!--
+      To modify your build process, add your task inside one of the targets below and uncomment it. 
+      Other similar extension points exist, see Microsoft.Common.targets.
+      <Target Name="BeforeBuild">
+      </Target>
+      <Target Name="AfterBuild">
+      </Target>
+    -->
+</Project>
