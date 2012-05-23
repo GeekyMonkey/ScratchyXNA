@@ -1,0 +1,7 @@
+*.suo
+*.trx
+*.user
+*.cachefile
+TestResults
+bin
+obj
