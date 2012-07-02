@@ -1051,9 +1051,30 @@ namespace ScratchyXna
         }
 
         /// <summary>
+        /// Stamp another sprite onto this sprite based on their screen positions. The other sprite will be drawn as normal and cropped to the rectangle of the current sprite.
+        /// </summary>
+        /// <param name="otherSprite">The sprite to stamp onto this one</param>
+        public void Stamp(Sprite otherSprite)
+        {
+            Stamp(otherSprite, StampMethods.Normal, StampCroppings.CropToSprite);
+        }
+
+        /// <summary>
+        /// Stamp another sprite onto this sprite based on their screen positions. The other sprite will be cropped to the rectangle of the current sprite.
+        /// </summary>
+        /// <param name="otherSprite">The sprite to stamp onto this one</param>
+        /// <param name="stampMethod">Stamp drawing method (Normal or Cutout)</param>
+        public void Stamp(Sprite otherSprite, StampMethods stampMethod)
+        {
+            Stamp(otherSprite, stampMethod, StampCroppings.CropToSprite);
+        }
+
+        /// <summary>
         /// Stamp another sprite onto this sprite based on their screen positions
         /// </summary>
-        /// <param name="otherSprite"></param>
+        /// <param name="otherSprite">The sprite to stamp onto this one</param>
+        /// <param name="stampMethod">Stamp drawing method (Normal or Cutout)</param>
+        /// <param name="stampMethod">Stamp cropping method (Crop or Grow)</param>
         public void Stamp(Sprite otherSprite, StampMethods stampMethod, StampCroppings stampCropping)
         {
             switch (stampCropping)
