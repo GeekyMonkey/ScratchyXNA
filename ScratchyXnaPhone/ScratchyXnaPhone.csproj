@@ -77,6 +77,12 @@
     <Compile Include="..\ScratchyXna\Enumerations\GridStyles.cs">
       <Link>Enumerations\GridStyles.cs</Link>
     </Compile>
+    <Compile Include="..\ScratchyXna\Enumerations\StampCroppings.cs">
+      <Link>Enumerations\StampCroppings.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Enumerations\StampMethods.cs">
+      <Link>Enumerations\StampMethods.cs</Link>
+    </Compile>
     <Compile Include="..\ScratchyXna\Input\KeyboardInput.cs">
       <Link>Input\KeyboardInput.cs</Link>
     </Compile>
@@ -115,6 +121,9 @@
     </Compile>
     <Compile Include="..\ScratchyXna\XnaHelpers\LinqExtensions.cs">
       <Link>XnaHelpers\LinqExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\XnaHelpers\MatrixExtensions.cs">
+      <Link>XnaHelpers\MatrixExtensions.cs</Link>
     </Compile>
     <Compile Include="..\ScratchyXna\XnaHelpers\RectangleF.cs">
       <Link>XnaHelpers\RectangleF.cs</Link>

@@ -97,6 +97,11 @@ namespace ScratchyXna
         private float layer = 1.0f;
 
         /// <summary>
+        /// Cutom costume when the costume needs to be modified for this sprite instance
+        /// </summary>
+        private RenderTarget2D customTexture;
+
+        /// <summary>
         /// Get or set the size of the sprite where 100% is the default size
         /// </summary>
         public float Size
@@ -201,6 +206,8 @@ namespace ScratchyXna
             {
                 costume = value;
                 costumeName = costume.Name;
+                customTexture = null;
+                this.customTexturePixels = null;
             }
         }
 
@@ -471,7 +478,7 @@ namespace ScratchyXna
         public virtual void Draw(SpriteBatch Drawing)
         {
             Vector2 screenPos = GameScreen.GetScreenPosition(Position);
-            Drawing.Draw(Costume.Texture, screenPos, null, SpriteColor * Alpha, -rotationRadians, Costume.Center, Scale / GameScreen.PixelScale, SpriteEffects.None, Depth);
+            Drawing.Draw(Texture, screenPos, null, SpriteColor * Alpha, rotationRadians, Costume.Center, Scale / GameScreen.PixelScale, SpriteEffects.None, Depth);
 
             // Draw the collision rect
             if (GameScreen.DrawSpriteRects)
@@ -480,6 +487,48 @@ namespace ScratchyXna
                 GameScreen.DrawRect(new RectangleF(Position.X -0.5f, Position.Y -0.5f, 1.0f, 1.0f), Color.Magenta);
             }
         }
+
+        /// <summary>
+        /// Get the current texture for this sprite, either from a custom costume, or the current costume
+        /// </summary>
+        public Texture2D Texture
+        {
+            get
+            {
+                return customTexture ?? costume.Texture;
+            }
+        }
+
+        public Color[] Pixels
+        {
+            get
+            {
+                if (customTexture == null)
+                {
+                    return Costume.Pixels;
+                }
+                if (customTexturePixels == null && customTexture != null)
+                {
+                    customTexturePixels = new Color[customTexture.Width * customTexture.Height];
+                    customTexture.GetData(customTexturePixels);
+                }
+                return customTexturePixels;
+            }
+            set
+            {
+                if (customTexture == null)
+                {
+                    Costume.Pixels = value;
+                }
+                else
+                {
+                    customTexture = new RenderTarget2D(Game.GraphicsDevice, customTexture.Width, customTexture.Height);
+                    customTexturePixels = value;
+                    customTexture.SetData(customTexturePixels);
+                }
+            }
+        }
+        private Color[] customTexturePixels;
 
         /*
         /// <summary>
@@ -894,7 +943,7 @@ namespace ScratchyXna
         /// <param name="adjustment">Depending on the costume, you may need to adjust by 90 degrees or some other amount</param>
         public void RotateTowards(Vector2 otherPoint, float adjustment)
         {
-            Rotation = AngleTowards(otherPoint) + adjustment;
+            Rotation = AngleTowards(otherPoint) * -1 + adjustment;
         }
         /// <summary>
         /// Rotate this sprite towards another point
@@ -913,7 +962,7 @@ namespace ScratchyXna
         /// <param name="adjustment">Depending on the costume, you may need to adjust by 90 degrees or some other amount</param>
         public void RotateTowards(Sprite otherSprite, float adjustment)
         {
-            Rotation = AngleTowards(otherSprite.Position) + adjustment;
+            Rotation = AngleTowards(otherSprite.Position) * -1 + adjustment;
         }
 
         /// <summary>
@@ -972,6 +1021,202 @@ namespace ScratchyXna
         public void GoToBack()
         {
             Layer = GameScreen.Sprites.OrderBy(s => s.Layer).First().Layer - 1;
+        }
+
+        /// <summary>
+        /// Begin creating a custom costume by copying the current costume
+        /// </summary>
+        public void CustomizeCostume()
+        {
+            if (this.customTexture == null)
+            {
+                this.customTexture = new RenderTarget2D(this.Game.GraphicsDevice, Costume.Texture.Width, Costume.Texture.Height);
+                this.customTexturePixels = null;
+
+                // Set render target 
+                this.Game.GraphicsDevice.SetRenderTarget(customTexture);
+
+                // Copy the current costume
+                this.Game.spriteBatch.Begin();
+                this.Game.GraphicsDevice.Clear(Color.Transparent);
+                this.Game.spriteBatch.Draw(this.Costume.Texture, Vector2.Zero, Color.White);
+                this.Game.spriteBatch.End();
+
+                // Unset render target 
+                this.Game.GraphicsDevice.SetRenderTarget(null);
+
+                // Force reload of pixels if needed
+                customTexturePixels = null;
+            }
+        }
+
+        /// <summary>
+        /// Stamp another sprite onto this sprite based on their screen positions
+        /// </summary>
+        /// <param name="otherSprite"></param>
+        public void Stamp(Sprite otherSprite, StampMethods stampMethod, StampCroppings stampCropping)
+        {
+            // Calculate a matrix which transforms from A's local space into
+            // world space and then into B's local space
+            Matrix transformAToB = otherSprite.Transform * Matrix.Invert(this.Transform);
+            Vector2 position;
+            float rotation;
+            float scale;
+            transformAToB.Decompose2D(out position, out rotation, out scale);
+
+             switch (stampCropping)
+            {
+                case StampCroppings.CropToSprite:
+                    break;
+                case StampCroppings.GrowSprite:
+                default:
+                    throw new Exception("Sprite.Stamp() does not yet support cropping mode " + stampCropping);
+            }
+
+            int width = Texture.Width;
+            int height = Texture.Height;
+            RenderTarget2D newTexture = new RenderTarget2D(
+                this.Game.GraphicsDevice,
+                width, height,
+                /*mipMap:*/ false, 
+                /*preferredFormat:*/ SurfaceFormat.Color,
+                /*preferredDepthFormat:*/ DepthFormat.Depth24Stencil8,
+                /*preferredMultiSampleCount:*/ 1,
+                /*usage:*/ RenderTargetUsage.DiscardContents);
+            switch (stampMethod)
+            {
+                case StampMethods.Normal:
+                    // Set render target 
+                    this.Game.GraphicsDevice.SetRenderTarget(newTexture);
+
+                    this.Game.GraphicsDevice.Clear(Color.Transparent);
+                    this.Game.spriteBatch.Begin();
+                    // Copy the current costume
+                    this.Game.spriteBatch.Draw(this.Texture, Vector2.Zero, Color.White);
+                    // Draw the other sprite
+                    this.Game.spriteBatch.Draw(otherSprite.Texture, position, null, Color.White, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                    this.Game.spriteBatch.End();
+
+                    // Unset render target 
+                    this.Game.GraphicsDevice.SetRenderTarget(null);
+                    break;
+                case StampMethods.Cutout:
+                    {
+                        CustomizeCostume();
+                        Color[] newPixels = StampAlpha(
+                            this.Transform, this.Costume.Texture.Width, this.Costume.Texture.Height, this.Costume.Pixels,
+                            otherSprite.Transform, otherSprite.Costume.Texture.Width, otherSprite.Costume.Texture.Height, otherSprite.Costume.Pixels, false);
+                        Pixels = newPixels;
+                        newTexture = customTexture;
+                    }
+                    break;
+                case StampMethods.CutoutInverted:
+                    {
+                        CustomizeCostume();
+                        Color[] newPixels = StampAlpha(
+                            this.Transform, this.Costume.Texture.Width, this.Costume.Texture.Height, this.Costume.Pixels,
+                            otherSprite.Transform, otherSprite.Costume.Texture.Width, otherSprite.Costume.Texture.Height, otherSprite.Costume.Pixels, true);
+                        Pixels = newPixels;
+                        newTexture = customTexture;
+                    }
+                    break;
+                default:
+                    throw new Exception("Sprite.Stamp() does not yet support stampMethod " + stampMethod);
+            }
+            this.customTexture = newTexture;
+        }
+
+        /// <summary>
+        /// Stamp the alpha values from one sprite onto another sprite
+        /// </summary>
+        /// <param name="transformA">World transform of the first sprite.</param>
+        /// <param name="widthA">Width of the first sprite's texture.</param>
+        /// <param name="heightA">Height of the first sprite's texture.</param>
+        /// <param name="dataA">Pixel color data of the first sprite.</param>
+        /// <param name="transformB">World transform of the second sprite.</param>
+        /// <param name="widthB">Width of the second sprite's texture.</param>
+        /// <param name="heightB">Height of the second sprite's texture.</param>
+        /// <param name="dataB">Pixel color data of the second sprite.</param>
+        private static Color[] StampAlpha(
+                            Matrix transformA, int widthA, int heightA, Color[] dataA,
+                            Matrix transformB, int widthB, int heightB, Color[] dataB, bool Invert)
+        {
+            Color[] newPixels = new Color[dataA.Count()];
+
+            // Calculate a matrix which transforms from A's local space into
+            // world space and then into B's local space
+            Matrix transformAToB = transformA * Matrix.Invert(transformB);
+
+            Vector3 scale;
+            Quaternion rotation;
+            Vector3 translation;
+            transformAToB.Decompose(out scale, out rotation, out translation);
+            transformAToB = Matrix.CreateScale(scale) * Matrix.CreateRotationZ(rotation.Z * -1) * Matrix.CreateTranslation(translation);
+
+            // When a point moves in A's local space, it moves in B's local space with a
+            // fixed direction and distance proportional to the movement in A.
+            // This algorithm steps through A one pixel at a time along A's X and Y axes
+            // Calculate the analogous steps in B:
+            Vector2 stepX = Vector2.TransformNormal(Vector2.UnitX, transformAToB);
+            Vector2 stepY = Vector2.TransformNormal(Vector2.UnitY, transformAToB);
+
+            // Calculate the top left corner of A in B's local space
+            // This variable will be reused to keep track of the start of each row
+            Vector2 yPosInB = Vector2.Transform(Vector2.Zero, transformAToB);
+
+            // For each row of pixels in A
+            for (int yA = 0; yA < heightA; yA++)
+            {
+                // Start at the beginning of the row
+                Vector2 posInB = yPosInB;
+
+                // For each pixel in this row
+                for (int xA = 0; xA < widthA; xA++)
+                {
+                    // Round to the nearest pixel
+                    int xB = (int)Math.Round(posInB.X);
+                    int yB = (int)Math.Round(posInB.Y);
+                    int indexA = xA + ((heightA - yA - 1) * widthA);
+                    Color colorA = dataA[indexA];
+
+                    // If the pixel lies within the bounds of B
+                    if (0 <= xB && xB < widthB &&
+                        0 <= yB && yB < heightB)
+                    {
+                        // Get the colors of the overlapping pixels
+                        Color colorB = dataB[xB + ((heightB - yB - 1) * widthB)];
+
+                        byte alpha = colorA.A;
+                        byte alphaB = colorB.A;
+                        if (Invert)
+                        {
+                            alphaB = (byte)(0xff - alphaB);
+                        }
+                        alpha = (byte)(Math.Max(0, alpha - alphaB));
+                        // newPixels[indexA] = colorB;
+                        newPixels[indexA] = colorA *(alpha / 255f);
+                    }
+                    else
+                    {
+                        if (Invert)
+                        {
+                            newPixels[indexA] = Color.Transparent;
+                        }
+                        else
+                        {
+                            newPixels[indexA] = colorA;
+                        }
+                    }
+
+                    // Move to the next pixel in the row
+                    posInB += stepX;
+                }
+
+                // Move to the next row
+                yPosInB += stepY;
+            }
+
+            return newPixels;
         }
 
     }

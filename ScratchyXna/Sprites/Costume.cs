@@ -125,6 +125,11 @@ namespace ScratchyXna
                 }
                 return pixels;
             }
+            set
+            {
+                pixels = value;
+                Texture.SetData(pixels);
+            }
         }
         private Color[] pixels;
     }
