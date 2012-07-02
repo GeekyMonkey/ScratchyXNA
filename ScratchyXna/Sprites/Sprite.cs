@@ -1056,15 +1056,7 @@ namespace ScratchyXna
         /// <param name="otherSprite"></param>
         public void Stamp(Sprite otherSprite, StampMethods stampMethod, StampCroppings stampCropping)
         {
-            // Calculate a matrix which transforms from A's local space into
-            // world space and then into B's local space
-            Matrix transformAToB = otherSprite.Transform * Matrix.Invert(this.Transform);
-            Vector2 position;
-            float rotation;
-            float scale;
-            transformAToB.Decompose2D(out position, out rotation, out scale);
-
-             switch (stampCropping)
+            switch (stampCropping)
             {
                 case StampCroppings.CropToSprite:
                     break;
@@ -1086,19 +1078,29 @@ namespace ScratchyXna
             switch (stampMethod)
             {
                 case StampMethods.Normal:
-                    // Set render target 
-                    this.Game.GraphicsDevice.SetRenderTarget(newTexture);
+                    {
+                        // Calculate a matrix which transforms from A's local space into
+                        // world space and then into B's local space
+                        Matrix transformAToB = otherSprite.Transform * Matrix.Invert(this.Transform);
+                        Vector2 position;
+                        float rotation;
+                        float scale;
+                        transformAToB.Decompose2D(out position, out rotation, out scale);
 
-                    this.Game.GraphicsDevice.Clear(Color.Transparent);
-                    this.Game.spriteBatch.Begin();
-                    // Copy the current costume
-                    this.Game.spriteBatch.Draw(this.Texture, Vector2.Zero, Color.White);
-                    // Draw the other sprite
-                    this.Game.spriteBatch.Draw(otherSprite.Texture, position, null, Color.White, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
-                    this.Game.spriteBatch.End();
+                        // Set render target 
+                        this.Game.GraphicsDevice.SetRenderTarget(newTexture);
 
-                    // Unset render target 
-                    this.Game.GraphicsDevice.SetRenderTarget(null);
+                        this.Game.GraphicsDevice.Clear(Color.Transparent);
+                        this.Game.spriteBatch.Begin();
+                        // Copy the current costume
+                        this.Game.spriteBatch.Draw(this.Texture, Vector2.Zero, Color.White);
+                        // Draw the other sprite
+                        this.Game.spriteBatch.Draw(otherSprite.Texture, position, null, Color.White, rotation, Vector2.Zero, otherSprite.Scale / Scale, SpriteEffects.None, 0f);
+                        this.Game.spriteBatch.End();
+
+                        // Unset render target 
+                        this.Game.GraphicsDevice.SetRenderTarget(null);
+                    }
                     break;
                 case StampMethods.Cutout:
                     {
