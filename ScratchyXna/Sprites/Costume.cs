@@ -17,7 +17,7 @@ namespace ScratchyXna
 
         private HorizontalAlignments xCenter = HorizontalAlignments.Center;
         private VerticalAlignments yCenter = VerticalAlignments.Center;
-        private Scene gameScreen;
+        private Scene scene;
 
         /// <summary>
         /// Name of the costume
@@ -40,12 +40,12 @@ namespace ScratchyXna
         /// <summary>
         /// Adding a costume to the game
         /// </summary>
-        /// <param name="gameScreen"></param>
+        /// <param name="scene"></param>
         /// <param name="content"></param>
         /// <param name="name"></param>
-        public void Load(Scene gameScreen, ContentManager content, string name)
+        public void Load(Scene scene, ContentManager content, string name)
         {
-            this.gameScreen = gameScreen;
+            this.scene = scene;
             Name = name;
             Texture = content.Load<Texture2D>("Costumes/" + name);
             CalculateCenter();

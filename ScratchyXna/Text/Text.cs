@@ -52,7 +52,7 @@ namespace ScratchyXna
         /// <summary>
         /// Screen that owns this text
         /// </summary>
-        public Scene GameScreen;
+        public Scene Scene;
 
         /// <summary>
         /// The speed of the animation. Lower is faster.  Default is 0.1
@@ -257,7 +257,7 @@ namespace ScratchyXna
             FontScale = (Font.LineSpacing / 400f);
             Vector2 unscaledSize = Font.MeasureString(Value);
             Size = Vector2.Transform(unscaledSize, Matrix.CreateScale(ScaleToDraw * FontScale));
-            ScreenPosition = GameScreen.GetScreenPosition(Position);
+            ScreenPosition = Scene.GetScreenPosition(Position);
             screenCenter = Vector2.Zero;
             if (Alignment == HorizontalAlignments.Right)
             {

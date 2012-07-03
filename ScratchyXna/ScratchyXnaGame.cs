@@ -25,12 +25,12 @@ namespace ScratchyXna
         public GraphicsDeviceManager graphics;
         public SpriteBatch spriteBatch;
         public Dictionary<string, Costume> costumes = new Dictionary<string, Costume>();
-        public Scene activeGameScreen;
+        public Scene activeGameScene;
         public KeyboardInput KeyboardInput = new KeyboardInput();
         public MouseInput MouseInput = new MouseInput();
         public TouchInput TouchInput = new TouchInput();
         public float SpeedMultiplier = 100f;
-        public Dictionary<string, Scene> GameScreens = new Dictionary<string, Scene>();
+        public Dictionary<string, Scene> Scenes = new Dictionary<string, Scene>();
         public Dictionary<string, SoundEffect> Sounds = new Dictionary<string, SoundEffect>();
         public Dictionary<string, SoundEffectInstance> SoundInstances = new Dictionary<string, SoundEffectInstance>();
         public Dictionary<string, SpriteFont> Fonts = new Dictionary<string, SpriteFont>();
@@ -51,7 +51,7 @@ namespace ScratchyXna
         /// <summary>
         /// Override to load all of the needed game screens
         /// </summary>
-        public abstract void LoadGameScreens();
+        public abstract void LoadScenes();
 
         /// <summary>
         /// Constructor
@@ -113,52 +113,51 @@ namespace ScratchyXna
 
             // TODO: use this.Content to load your game content here
 
-            LoadGameScreens();
-            foreach (var screen in GameScreens)
+            LoadScenes();
+            foreach (var scene in Scenes)
             {
-                screen.Value.Init(this);
+                scene.Value.Init(this);
             }
-            if (activeGameScreen == null)
+            if (activeGameScene == null)
             {
-                GameScreens.First().Value.ShowScreen();
+                Scenes.First().Value.ShowScene();
             }
         }
 
         /// <summary>
-        /// Add a new screen to the game
+        /// Add a new scene to the game and give it a name
         /// </summary>
-        /// <param name="name">Name of the screen</param>
-        public T AddScreen<T>(string name) where T : Scene, new()
+        /// <param name="name">Name of the scene</param>
+        public T AddScene<T>(string name) where T : Scene, new()
         {
-            T screen = new T();
-            string screenName = (name ?? typeof(T).Name.ToLower().Replace("screen", "")).ToLower();
-            GameScreens.Add(screenName, screen);
-            return screen;
+            T scene = new T();
+            string sceneName = (name ?? typeof(T).Name.ToLower().Replace("screen", "").Replace("scene","")).ToLower();
+            Scenes.Add(sceneName, scene);
+            return scene;
         }
         /// <summary>
-        /// Add a new screen to the game
+        /// Add a new scene to the game
         /// </summary>
-        /// <param name="name">Name of the screen</param>
-        public T AddScreen<T>() where T : Scene, new()
+        public T AddScene<T>() where T : Scene, new()
         {
-            return AddScreen<T>(null);
+            return AddScene<T>(null);
         }
 
 
         /// <summary>
         /// Add a costume to the game
         /// </summary>
-        /// <param name="gameScreen">Screen that owns it</param>
+        /// <param name="scene">Scene that owns it</param>
         /// <param name="CostumeName">Name of the costume</param>
         /// <returns>The costume object</returns>
-        public Costume LoadCostume(Scene gameScreen, string CostumeName)
+        public Costume LoadCostume(Scene scene, string CostumeName)
         {
             if (costumes.ContainsKey(CostumeName))
             {
                 return costumes[CostumeName];
             }
             Costume costume = new Costume();
-            costume.Load(gameScreen, Content, CostumeName);
+            costume.Load(scene, Content, CostumeName);
             costumes[CostumeName] = costume;
             return costume;
         }
@@ -299,29 +298,29 @@ namespace ScratchyXna
             // Allows the game to exit
             if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed) || KeyboardInput.KeyPressed(Keys.Escape))
             {
-                switch (activeGameScreen.BackButtonBehaviour)
+                switch (activeGameScene.BackButtonBehaviour)
                 {
                     case BackButtonBehaviours.ExitGame:
                         this.Exit();
                         break;
-                    case BackButtonBehaviours.ShowFirstScreenOrExit:
-                        if (activeGameScreen == GameScreens.First().Value)
+                    case BackButtonBehaviours.ShowFirstSceneOrExit:
+                        if (activeGameScene == Scenes.First().Value)
                         {
                             this.Exit();
                         }
                         else
                         {
-                            GameScreens.First().Value.ShowScreen();
+                            Scenes.First().Value.ShowScene();
                         }
                         break;
-                    case BackButtonBehaviours.ShowPreviousScreen:
-                        if (activeGameScreen.PreviousScreen == null)
+                    case BackButtonBehaviours.ShowPreviousScene:
+                        if (activeGameScene.PreviousScene == null)
                         {
                             this.Exit();
                         }
                         else
                         {
-                            activeGameScreen.PreviousScreen.ShowScreen();
+                            activeGameScene.PreviousScene.ShowScene();
                         }
                         break;
                     case BackButtonBehaviours.Ignore:
@@ -336,7 +335,7 @@ namespace ScratchyXna
             TouchInput.Update();
 #endif
 
-            activeGameScreen.UpdateScreen(gameTime);
+            activeGameScene.UpdateScene(gameTime);
 
             base.Update(gameTime);
         }
@@ -355,7 +354,7 @@ namespace ScratchyXna
             */
             GraphicsDevice.DepthStencilState = new DepthStencilState() { DepthBufferEnable = true };
 
-            activeGameScreen.Draw(gameTime);
+            activeGameScene.Draw(gameTime);
 
             base.Draw(gameTime);
         }

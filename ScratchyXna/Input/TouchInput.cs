@@ -55,7 +55,7 @@ namespace ScratchyXna
                     taps = new List<Vector2>();
                     foreach (var tap in Gestures.Where(g => g.GestureType == GestureType.Tap))
                     {
-                        taps.Add(ScratchyXnaGame.ScratchyGame.activeGameScreen.PixelToPosition((int)tap.Position.X, (int)tap.Position.Y));
+                        taps.Add(ScratchyXnaGame.ScratchyGame.activeGameScene.PixelToPosition((int)tap.Position.X, (int)tap.Position.Y));
                     }
                 }
                 return taps;

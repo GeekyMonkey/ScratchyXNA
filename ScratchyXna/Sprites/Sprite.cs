@@ -18,21 +18,21 @@ namespace ScratchyXna
         public bool Visible = true;
 
         /// <summary>
-        /// The game screen that owns this sprite
+        /// The game scene that owns this sprite
         /// </summary>
-        public Scene GameScreen
+        public Scene Scene
         {
             get
             {
-                return gameScreen;
+                return scene;
             }
             set
             {
-                gameScreen = value;
-                Game = gameScreen.Game;
+                scene = value;
+                Game = scene.Game;
             }
         }
-        private Scene gameScreen;
+        private Scene scene;
 
         /// <summary>
         /// The game content manager
@@ -151,7 +151,7 @@ namespace ScratchyXna
         /// <param name="name">Name of the costume</param>
         public Costume SetCostume(string name)
         {
-            Costume = Game.LoadCostume(GameScreen, name);
+            Costume = Game.LoadCostume(Scene, name);
             return Costume;
         }
 
@@ -218,7 +218,7 @@ namespace ScratchyXna
         public Costume AddCostume(string costumeName)
         {
             // Use the shared content loader
-            Costume costume = Game.LoadCostume(GameScreen, costumeName);
+            Costume costume = Game.LoadCostume(Scene, costumeName);
 
             // Keep a local list of sprite specific costumes
             SpriteCostumes.Add(costume);
@@ -237,7 +237,7 @@ namespace ScratchyXna
         {
             get
             {
-                return (float)Costume.Texture.Width * GameScreen.PixelScale * Scale;
+                return (float)Costume.Texture.Width * Scene.PixelScale * Scale;
             }
         }
 
@@ -248,7 +248,7 @@ namespace ScratchyXna
         {
             get
             {
-                return (float)Costume.Texture.Height * GameScreen.PixelScale * Scale;
+                return (float)Costume.Texture.Height * Scene.PixelScale * Scale;
             }
         }
 
@@ -406,11 +406,11 @@ namespace ScratchyXna
         /// <summary>
         /// Init this sprite
         /// </summary>
-        /// <param name="gameScreen"></param>
-        public void Init(Scene gameScreen)
+        /// <param name="scene">The scene that owns this sprite</param>
+        public void Init(Scene scene)
         {
-            GameScreen = gameScreen;
-            Game = gameScreen.Game;
+            Scene = scene;
+            Game = scene.Game;
             Load();
         }
 
@@ -477,14 +477,14 @@ namespace ScratchyXna
         /// <param name="Drawing">Sprite drawing context</param>
         public virtual void Draw(SpriteBatch Drawing)
         {
-            Vector2 screenPos = GameScreen.GetScreenPosition(Position);
-            Drawing.Draw(Texture, screenPos, null, SpriteColor * Alpha, rotationRadians, Costume.Center, Scale / GameScreen.PixelScale, SpriteEffects.None, Depth);
+            Vector2 screenPos = Scene.GetScreenPosition(Position);
+            Drawing.Draw(Texture, screenPos, null, SpriteColor * Alpha, rotationRadians, Costume.Center, Scale / Scene.PixelScale, SpriteEffects.None, Depth);
 
             // Draw the collision rect
-            if (GameScreen.DrawSpriteRects)
+            if (Scene.DrawSpriteRects)
             {
-                GameScreen.DrawRect(Rect, Color.Gray);
-                GameScreen.DrawRect(new RectangleF(Position.X -0.5f, Position.Y -0.5f, 1.0f, 1.0f), Color.Magenta);
+                Scene.DrawRect(Rect, Color.Gray);
+                Scene.DrawRect(new RectangleF(Position.X -0.5f, Position.Y -0.5f, 1.0f, 1.0f), Color.Magenta);
             }
         }
 
@@ -651,8 +651,8 @@ namespace ScratchyXna
         public bool IsOffScreen()
         {
             RectangleF spriteRect = Rect; //todo: don't use temp variable once Rect property is cached
-            return spriteRect.Right < GameScreen.MinX
-                || spriteRect.Left > GameScreen.MaxX
+            return spriteRect.Right < Scene.MinX
+                || spriteRect.Left > Scene.MaxX
                 || spriteRect.Top < -100
                 || spriteRect.Bottom > 100;
         }
@@ -833,7 +833,7 @@ namespace ScratchyXna
         /// <param name="callback">Action callback function</param>
         public void Wait(double seconds, Action callback)
         {
-            GameScreen.ScheduleEvent(seconds, false, callback);
+            Scene.ScheduleEvent(seconds, false, callback);
         }
 
         /// <summary>
@@ -843,7 +843,7 @@ namespace ScratchyXna
         /// <param name="callback">Action callback function</param>
         public void Forever(double seconds, Action callback)
         {
-            GameScreen.ScheduleEvent(seconds, true, callback);
+            Scene.ScheduleEvent(seconds, true, callback);
         }
 
 
@@ -973,7 +973,7 @@ namespace ScratchyXna
         public void GlideTo(Vector2 position, float seconds)
         {
             glidePosition = position;
-            glideTime = this.GameScreen.Game.gameTime.TotalGameTime + TimeSpan.FromSeconds(seconds);
+            glideTime = this.Scene.Game.gameTime.TotalGameTime + TimeSpan.FromSeconds(seconds);
         }
         private Vector2? glidePosition = null;
         private TimeSpan glideTime;
@@ -1012,7 +1012,7 @@ namespace ScratchyXna
         /// </summary>
         public void GoToFront()
         {
-            Layer = GameScreen.Sprites.OrderByDescending(s => s.Layer).First().Layer + 1;
+            Layer = Scene.Sprites.OrderByDescending(s => s.Layer).First().Layer + 1;
         }
 
         /// <summary>
@@ -1020,7 +1020,7 @@ namespace ScratchyXna
         /// </summary>
         public void GoToBack()
         {
-            Layer = GameScreen.Sprites.OrderBy(s => s.Layer).First().Layer - 1;
+            Layer = Scene.Sprites.OrderBy(s => s.Layer).First().Layer - 1;
         }
 
         /// <summary>
@@ -1051,7 +1051,7 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Stamp another sprite onto this sprite based on their screen positions. The other sprite will be drawn as normal and cropped to the rectangle of the current sprite.
+        /// Stamp another sprite onto this sprite based on their scene positions. The other sprite will be drawn as normal and cropped to the rectangle of the current sprite.
         /// </summary>
         /// <param name="otherSprite">The sprite to stamp onto this one</param>
         public void Stamp(Sprite otherSprite)
@@ -1060,7 +1060,7 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Stamp another sprite onto this sprite based on their screen positions. The other sprite will be cropped to the rectangle of the current sprite.
+        /// Stamp another sprite onto this sprite based on their scene positions. The other sprite will be cropped to the rectangle of the current sprite.
         /// </summary>
         /// <param name="otherSprite">The sprite to stamp onto this one</param>
         /// <param name="stampMethod">Stamp drawing method (Normal or Cutout)</param>
@@ -1070,7 +1070,7 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Stamp another sprite onto this sprite based on their screen positions
+        /// Stamp another sprite onto this sprite based on their scene positions
         /// </summary>
         /// <param name="otherSprite">The sprite to stamp onto this one</param>
         /// <param name="stampMethod">Stamp drawing method (Normal or Cutout)</param>

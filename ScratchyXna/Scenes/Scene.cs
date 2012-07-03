@@ -13,12 +13,12 @@ namespace ScratchyXna
     abstract public class Scene : ScratchyObject
     {
         /// <summary>
-        /// The game that owns this screen
+        /// The game that owns this scene
         /// </summary>
         public ScratchyXnaGame Game;
 
         /// <summary>
-        /// Has this screen been started
+        /// Has this scene been started
         /// </summary>
         public bool Started = false;
 
@@ -28,17 +28,17 @@ namespace ScratchyXna
         public Color BackgroundColor = Color.Transparent;
 
         /// <summary>
-        /// Sprite objects managed by this screen
+        /// Sprite objects managed by this scene
         /// </summary>
         public List<Sprite> Sprites = new List<Sprite>();
 
         /// <summary>
-        /// ScheduledEvents managed by this screen
+        /// ScheduledEvents managed by this scene
         /// </summary>
         public List<ScheduledEvent> ScheduledEvents = new List<ScheduledEvent>();
 
         /// <summary>
-        /// Texts managed by this screen
+        /// Texts managed by this scene
         /// </summary>
         public List<Text> Texts = new List<Text>();
 
@@ -67,20 +67,24 @@ namespace ScratchyXna
         /// </summary>
         public float MaxX;
 
-        internal Scene PreviousScreen = null;
+        /// <summary>
+        /// The timer used for this scene
+        /// </summary>
+        private ScratchyXna.Timer timer = null;
+
+        internal Scene PreviousScene = null;
         private GraphicsDevice Graphics;
         private SpriteFont font = null;
         private string fontName = null;
-        private TimeSpan ScreenStartTime;
         private static SpriteFont defaultFont = null;
         private float GridSize = 10;
         public GridStyles GridStyle = GridStyles.None;
         internal bool DrawSpriteRects = false;
         public bool DebugTextVisible = false;
-        public BackButtonBehaviours BackButtonBehaviour = BackButtonBehaviours.ShowFirstScreenOrExit;
+        public BackButtonBehaviours BackButtonBehaviour = BackButtonBehaviours.ShowFirstSceneOrExit;
 
         /// <summary>
-        /// Init this screen at program startup
+        /// Init this scene at program startup
         /// </summary>
         /// <param name="game"></param>
         public void Init(ScratchyXnaGame game)
@@ -89,8 +93,24 @@ namespace ScratchyXna
             Graphics = game.GraphicsDevice;
             Content = game.Content;
             Drawing = game.spriteBatch;
+            timer = new ScratchyXna.Timer();
             CalculatePixelScale();
             Load();
+        }
+
+        /// <summary>
+        /// Gets or sets the timer for this scene
+        /// </summary>
+        public Timer Timer
+        {
+            get
+            {
+                return timer;
+            }
+            set
+            {
+                timer = value;
+            }
         }
 
         /// <summary>
@@ -110,7 +130,7 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Default font for this screen
+        /// Default font for this scene
         /// </summary>
         public SpriteFont Font
         {
@@ -152,45 +172,45 @@ namespace ScratchyXna
 
 
         /// <summary>
-        /// Show this game screen
+        /// Show this game scene
         /// </summary>
-        public void ShowScreen()
+        public void ShowScene()
         {
-            ShowScreen(this);
+            ShowScene(this);
         }
 
         /// <summary>
-        /// Show a game screen
+        /// Show a game scene
         /// </summary>
-        /// <param name="ScreenToShow">The name of the screen to show</param>
-        public void ShowScreen(string ScreenToShow)
+        /// <param name="SceneToShow">The name of the screen to show</param>
+        public void ShowScene(string SceneToShow)
         {
-            Scene screenToShow = Game.GameScreens[ScreenToShow.ToLower()];
-            if (screenToShow == null)
+            Scene sceneToShow = Game.Scenes[SceneToShow.ToLower()];
+            if (sceneToShow == null)
             {
-                throw new Exception("Attempted to show an unknown screen named: " + ScreenToShow);
+                throw new Exception("Attempted to show an unknown scene named: " + SceneToShow);
             }
-            ShowScreen(screenToShow);
+            ShowScene(sceneToShow);
         }
 
         /// <summary>
-        /// Show a game screen
+        /// Show a game scene
         /// </summary>
-        /// <param name="ScreenToShow"></param>
-        public void ShowScreen(Scene ScreenToShow)
+        /// <param name="SceneToShow"></param>
+        public void ShowScene(Scene SceneToShow)
         {
-            if (Game.activeGameScreen != null)
+            if (Game.activeGameScene != null)
             {
-                Game.activeGameScreen.StopGameScreen();
+                Game.activeGameScene.StopGameScene();
             }
 
             // Remember previous screen
-            if (ScreenToShow != PreviousScreen)
+            if (SceneToShow != PreviousScene)
             {
-                ScreenToShow.PreviousScreen = Game.activeGameScreen;
+                SceneToShow.PreviousScene = Game.activeGameScene;
             }
-            Game.activeGameScreen = ScreenToShow;
-            Game.activeGameScreen.StartGameScreen();
+            Game.activeGameScene = SceneToShow;
+            Game.activeGameScene.StartGameScene();
         }
 
         /// <summary>
@@ -199,22 +219,22 @@ namespace ScratchyXna
         public abstract void Load();
 
         /// <summary>
-        /// Override the Update function with things that need to happen whenver this screen is visible
+        /// Override the Update function with things that need to happen whenver this scene is visible
         /// </summary>
         /// <param name="gameTime"></param>
         public abstract void Update(GameTime gameTime);
 
         /// <summary>
-        /// This screen is starting to display
+        /// This scene is starting to display
         /// </summary>
-        public virtual void StartScreen()
+        public virtual void StartScene()
         {
         }
 
         /// <summary>
-        /// This screen is being hidden
+        /// This scene is being hidden
         /// </summary>
-        public virtual void StopScreen()
+        public virtual void StopScene()
         {
         }
 
@@ -226,12 +246,12 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Start the game screen
+        /// Start the game scene
         /// </summary>
-        public void StartGameScreen()
+        public void StartGameScene()
         {
-            ScreenStartTime = TimeSpan.MaxValue;
-            StartScreen();
+            Timer.Reset();
+            StartScene();
             foreach (Text text in Texts)
             {
                 text.Start();
@@ -240,12 +260,12 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Stop the game screen
+        /// Stop the game scene
         /// </summary>
-        public void StopGameScreen()
+        public void StopGameScene()
         {
             Started = false;
-            StopScreen();
+            StopScene();
             ScheduledEvents.Clear();
         }
 
@@ -253,12 +273,8 @@ namespace ScratchyXna
         /// Update since the last game loop iteration
         /// </summary>
         /// <param name="gameTime">Time since the last update</param>
-        public void UpdateScreen(GameTime gameTime)
+        public void UpdateScene(GameTime gameTime)
         {
-            if (ScreenStartTime == TimeSpan.MaxValue)
-            {
-                ScreenStartTime = gameTime.TotalGameTime;
-            }
             Update(gameTime);
             foreach (Sprite sprite in Sprites)
             {
@@ -307,7 +323,7 @@ namespace ScratchyXna
                 }
                 if (Keyboard.KeyPressed(Keys.S))
                 {
-                    ShowScreen("Test");
+                    ShowScene("Test");
                 }
             }
         }
@@ -323,7 +339,7 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Draw the screen
+        /// Draw the scene
         /// </summary>
         /// <param name="gameTime"></param>
         public void Draw(GameTime gameTime)
@@ -506,7 +522,7 @@ namespace ScratchyXna
         /// <returns>The text object added</returns>
         public Text AddText(Text text)
         {
-            text.GameScreen = this;
+            text.Scene = this;
             if (text.Font == null)
             {
                 if (this.Font == null)

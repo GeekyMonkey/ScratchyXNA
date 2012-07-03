@@ -83,7 +83,7 @@ namespace ScratchyXna
                 // Use cached value?
                 if (position == Vector2.Zero)
                 {
-                    position = ScratchyXnaGame.ScratchyGame.activeGameScreen.PixelToPosition(currentState.X, currentState.Y);
+                    position = ScratchyXnaGame.ScratchyGame.activeGameScene.PixelToPosition(currentState.X, currentState.Y);
                 }
                 return position;
             }
