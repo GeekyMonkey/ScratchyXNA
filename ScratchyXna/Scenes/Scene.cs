@@ -33,9 +33,9 @@ namespace ScratchyXna
         public List<Sprite> Sprites = new List<Sprite>();
 
         /// <summary>
-        /// Timer objects managed by this screen
+        /// ScheduledEvents managed by this screen
         /// </summary>
-        public List<Timer> Timers = new List<Timer>();
+        public List<ScheduledEvent> ScheduledEvents = new List<ScheduledEvent>();
 
         /// <summary>
         /// Texts managed by this screen
@@ -246,7 +246,7 @@ namespace ScratchyXna
         {
             Started = false;
             StopScreen();
-            Timers.Clear();
+            ScheduledEvents.Clear();
         }
 
         /// <summary>
@@ -269,19 +269,19 @@ namespace ScratchyXna
                 text.Update(gameTime);
             }
             TimeSpan totalGameTime = gameTime.TotalGameTime;
-            foreach (Timer timer in Timers)
+            foreach (ScheduledEvent scheduledEvent in ScheduledEvents)
             {
-                if (totalGameTime >= timer.TargetTime)
+                if (totalGameTime >= scheduledEvent.TargetTime)
                 {
-                    if (timer.Repeat == false)
+                    if (scheduledEvent.Repeat == false)
                     {
-                        Timers.Remove(timer);
+                        ScheduledEvents.Remove(scheduledEvent);
                     }
                     else
                     {
-                        timer.TargetTime = totalGameTime + timer.Time;
+                        scheduledEvent.TargetTime = totalGameTime + scheduledEvent.Time;
                     }
-                    timer.Callback();
+                    scheduledEvent.Callback();
                     break;
                 }
             }
@@ -530,7 +530,7 @@ namespace ScratchyXna
         /// <param name="callback">Action callback function</param>
         public void Wait(double seconds, Action callback)
         {
-            AddTimer(seconds, false, callback);
+            ScheduleEvent(seconds, false, callback);
         }
 
         /// <summary>
@@ -540,7 +540,7 @@ namespace ScratchyXna
         /// <param name="callback">Action callback function</param>
         public void Forever(double seconds, Action callback)
         {
-            AddTimer(seconds, true, callback);
+            ScheduleEvent(seconds, true, callback);
         }
 
         /// <summary>
@@ -549,12 +549,12 @@ namespace ScratchyXna
         /// <param name="seconds">Seconds until the action</param>
         /// <param name="repeat">Should it repeat, or fire once</param>
         /// <param name="callback">Action callback</param>
-        /// <returns>The created timer object</returns>
-        internal Timer AddTimer(double seconds, bool repeat, Action callback)
+        /// <returns>The created ScheduledEvent object</returns>
+        internal ScheduledEvent ScheduleEvent(double seconds, bool repeat, Action callback)
         {
-            Timer timer = new Timer(Game.gameTime.TotalGameTime, seconds, callback, repeat);
-            Timers.Add(timer);
-            return timer;
+            ScheduledEvent scheduledEvent = new ScheduledEvent(Game.gameTime.TotalGameTime, seconds, callback, repeat);
+            ScheduledEvents.Add(scheduledEvent);
+            return scheduledEvent;
         }
 
         /// <summary>

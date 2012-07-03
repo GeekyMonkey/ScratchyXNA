@@ -8,7 +8,7 @@ namespace ScratchyXna
     /// <summary>
     /// A scheduled action
     /// </summary>
-    public class Timer
+    public class ScheduledEvent
     {
         internal TimeSpan Time;
         internal Action Callback;
@@ -20,11 +20,11 @@ namespace ScratchyXna
         /// <summary>
         /// Create a scheduled action
         /// </summary>
-        /// <param name="startTime">When the timer was created (time since game start)</param>
+        /// <param name="startTime">When the ScheduledEvent was created (time since game start)</param>
         /// <param name="timeInterval">Time to start (time since game start)</param>
         /// <param name="callback">Action to fire</param>
         /// <param name="repeat">Repeat after firing the event</param>
-        public Timer(TimeSpan startTime, TimeSpan timeInterval, Action callback)
+        public ScheduledEvent(TimeSpan startTime, TimeSpan timeInterval, Action callback)
         {
             StartTime = startTime;
             Time = timeInterval;
@@ -36,11 +36,11 @@ namespace ScratchyXna
         /// <summary>
         /// Create a scheduled action
         /// </summary>
-        /// <param name="startTime">When the timer was created (time since game start)</param>
+        /// <param name="startTime">When the ScheduledEvent was created (time since game start)</param>
         /// <param name="timeInterval">Time to start (time since game start)</param>
         /// <param name="callback">Action to fire</param>
         /// <param name="repeat">Repeat after firing the event</param>
-        public Timer(TimeSpan startTime, double seconds, Action callback, bool repeat)
+        public ScheduledEvent(TimeSpan startTime, double seconds, Action callback, bool repeat)
         {
             StartTime = startTime;
             Time = TimeSpan.FromSeconds(seconds);

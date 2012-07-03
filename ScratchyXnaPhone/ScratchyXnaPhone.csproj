@@ -116,8 +116,8 @@
     <Compile Include="..\ScratchyXna\Text\TextAnimations.cs">
       <Link>Text\TextAnimations.cs</Link>
     </Compile>
-    <Compile Include="..\ScratchyXna\Timer.cs">
-      <Link>Timer.cs</Link>
+    <Compile Include="..\ScratchyXna\Time\ScheduledEvent.cs">
+      <Link>Time\ScheduledEvent.cs</Link>
     </Compile>
     <Compile Include="..\ScratchyXna\XnaHelpers\LinqExtensions.cs">
       <Link>XnaHelpers\LinqExtensions.cs</Link>

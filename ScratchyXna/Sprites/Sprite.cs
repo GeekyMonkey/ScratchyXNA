@@ -833,7 +833,7 @@ namespace ScratchyXna
         /// <param name="callback">Action callback function</param>
         public void Wait(double seconds, Action callback)
         {
-            GameScreen.AddTimer(seconds, false, callback);
+            GameScreen.ScheduleEvent(seconds, false, callback);
         }
 
         /// <summary>
@@ -843,7 +843,7 @@ namespace ScratchyXna
         /// <param name="callback">Action callback function</param>
         public void Forever(double seconds, Action callback)
         {
-            GameScreen.AddTimer(seconds, true, callback);
+            GameScreen.ScheduleEvent(seconds, true, callback);
         }
 
 
