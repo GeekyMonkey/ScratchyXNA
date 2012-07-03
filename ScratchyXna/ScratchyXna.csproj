@@ -72,6 +72,7 @@
     <Compile Include="Enumerations\Alignment.cs" />
     <Compile Include="Text\TextAnimations.cs" />
     <Compile Include="Time\ScheduledEvent.cs" />
+    <Compile Include="Time\Timer.cs" />
     <Compile Include="XnaHelpers\LinqExtensions.cs" />
     <Compile Include="XnaHelpers\MatrixExtensions.cs" />
     <Compile Include="XnaHelpers\RectangleF.cs" />
