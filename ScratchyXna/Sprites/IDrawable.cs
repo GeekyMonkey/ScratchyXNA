@@ -9,6 +9,7 @@ namespace ScratchyXna
     public interface IDrawable
     {
         float Layer { get; set; }
+
         void DrawObject(SpriteBatch Drawing);
     }
 }
