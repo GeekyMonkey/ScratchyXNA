@@ -128,7 +128,7 @@ namespace ScratchyXna
         private Vector2 Size;
         private float ScaleToDraw = 1.0f;
         private float layer = 100.0f;
-        
+
 
         /// <summary>
         /// Construct a text object
@@ -226,6 +226,38 @@ namespace ScratchyXna
         }
 
         /// <summary>
+        /// X position in range -100 to 100
+        /// </summary>
+        public double X
+        {
+            get
+            {
+                return Position.X;
+            }
+            set
+            {
+                Position.X = (float)value;
+                Dirty = true;
+            }
+        }
+
+        /// <summary>
+        /// Y position in range -100 to 100
+        /// </summary>
+        public double Y
+        {
+            get
+            {
+                return Position.Y;
+            }
+            set
+            {
+                Position.Y = (float)value;
+                Dirty = true;
+            }
+        }
+
+        /// <summary>
         /// Set the horizontal (X) Alignment for this text
         /// </summary>
         /// <param name="alignment">Alignment type</param>
@@ -262,22 +294,18 @@ namespace ScratchyXna
             if (Alignment == HorizontalAlignments.Right)
             {
                 ScreenPosition.X = ScreenPosition.X - Size.X;
-                // screenCenter.X = Size.X;
             }
             else if (Alignment == HorizontalAlignments.Center)
             {
                 ScreenPosition.X = ScreenPosition.X - (Size.X / 2.0f);
-                //screenCenter.X = Size.X / -2f;
             }
             if (VerticalAlign == VerticalAlignments.Bottom)
             {
                 ScreenPosition.Y = ScreenPosition.Y - Size.Y;
-                //screenCenter.Y = - Size.Y;
             }
             else if (VerticalAlign == VerticalAlignments.Center)
             {
                 ScreenPosition.Y = ScreenPosition.Y - (Size.Y / 2.0f);
-                //screenCenter.Y = Size.Y / 2f;
             }
             Dirty = false;
         }
@@ -354,17 +382,17 @@ namespace ScratchyXna
         /// <param name="Drawing">SpriteBatch drawing context</param>
         public void Draw(SpriteBatch Drawing)
         {
-                Drawing.DrawString(
-                    Font,
-                    ValueToDraw /* + " X=" + ScreenPosition.X + " Y=" + ScreenPosition.Y */,
-                    ScreenPosition,
-                    Color,
-                    Rotation,
-                    screenCenter,
-                    ScaleToDraw * FontScale,
-                    SpriteEffects.None,
-                    Depth
-                    );
+            Drawing.DrawString(
+                Font,
+                ValueToDraw /* + " X=" + ScreenPosition.X + " Y=" + ScreenPosition.Y */,
+                ScreenPosition,
+                Color,
+                Rotation,
+                screenCenter,
+                ScaleToDraw * FontScale,
+                SpriteEffects.None,
+                Depth
+                );
         }
 
         public void DrawObject(SpriteBatch drawing)
@@ -374,6 +402,78 @@ namespace ScratchyXna
                 Draw(drawing);
             }
             ready = true;
+        }
+
+        public ScratchyXnaGame Game
+        {
+            get
+            {
+                return ScratchyXnaGame.ScratchyGame;
+            }
+        }
+
+        /// <summary>
+        /// Create a sprite copy of the current state of this text object
+        /// </summary>
+        /// <returns>A new sprite</returns>
+        public TextSprite CreateSprite()
+        {
+            if (Dirty)
+            {
+                ProcessText();
+            }
+            Vector2 screenPos = this.ScreenPosition;
+            Vector2 pos = this.Game.PixelToPosition((int)screenPos.X, (int)screenPos.Y);
+            float PixelScale = 200f / (float)this.Game.GraphicsDevice.Viewport.Height;
+            TextSprite textSprite = new TextSprite
+            {
+                Costume = new Costume
+                {
+                    Name="TextSprite",
+                },
+                Layer = this.Layer,
+                Position = this.Position, // pos,
+                Scale = PixelScale // 1f / (this.ScaleToDraw) //todo
+            };
+            var customTexture = new RenderTarget2D(this.Game.GraphicsDevice, (int)this.Size.X, (int)this.Size.Y);
+            textSprite.Costume.Texture = customTexture;
+            textSprite.Costume.XCenter = this.Alignment;
+            switch (this.VerticalAlign)
+            {
+                case VerticalAlignments.Top:
+                    textSprite.Costume.YCenter = VerticalAlignments.Top;
+                    break;
+                case VerticalAlignments.Center:
+                    textSprite.Costume.YCenter = VerticalAlignments.Center;
+                    break;
+                case VerticalAlignments.Bottom:
+                    textSprite.Costume.YCenter = VerticalAlignments.Bottom;
+                    break;
+            }
+
+            // Set render target 
+            this.Game.GraphicsDevice.SetRenderTarget(customTexture);
+
+            // Copy the current costume
+            this.Game.spriteBatch.Begin();
+            this.Game.GraphicsDevice.Clear(Color.Transparent);
+            this.Game.spriteBatch.DrawString(
+                Font,
+                ValueToDraw,
+                Vector2.Zero,
+                Color,
+                Rotation,
+                Vector2.Zero,
+                ScaleToDraw * FontScale,
+                SpriteEffects.None,
+                Depth
+                );
+            this.Game.spriteBatch.End();
+
+            // Unset render target 
+            this.Game.GraphicsDevice.SetRenderTarget(null);
+
+            return textSprite;
         }
     }
 }

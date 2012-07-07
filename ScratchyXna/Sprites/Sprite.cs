@@ -497,6 +497,11 @@ namespace ScratchyXna
             {
                 return customTexture ?? costume.Texture;
             }
+            set
+            {
+                customTexture = value as RenderTarget2D;
+                customTexturePixels = null;
+            }
         }
 
         public Color[] Pixels
@@ -556,7 +561,7 @@ namespace ScratchyXna
             {
                 // Matrix scaleMatrix = Matrix.CreateScale(Scale);
                 Matrix transform =
-                    Matrix.CreateTranslation(new Vector3(-Costume.Center.X, Costume.Center.Y - costume.Texture.Height, 0f)) *
+                    Matrix.CreateTranslation(new Vector3(-Costume.Center.X, Costume.Center.Y - this.Texture.Height, 0f)) *
                     Matrix.CreateScale(Scale) *
                     Matrix.CreateRotationZ(rotationRadians) *
                     Matrix.CreateTranslation(new Vector3(Position, 0));
@@ -1026,6 +1031,7 @@ namespace ScratchyXna
         /// <summary>
         /// Begin creating a custom costume by copying the current costume
         /// </summary>
+        /*
         public void CustomizeCostume()
         {
             if (this.customTexture == null)
@@ -1049,6 +1055,7 @@ namespace ScratchyXna
                 customTexturePixels = null;
             }
         }
+        */
 
         /// <summary>
         /// Stamp another sprite onto this sprite based on their scene positions. The other sprite will be drawn as normal and cropped to the rectangle of the current sprite.
@@ -1108,6 +1115,12 @@ namespace ScratchyXna
                         float scale;
                         transformAToB.Decompose2D(out position, out rotation, out scale);
 
+                        Vector3 scaleAToB;
+                        Quaternion rotationAToB;
+                        Vector3 translationAToB;
+                        transformAToB.Decompose(out scaleAToB, out rotationAToB, out translationAToB);
+                        transformAToB = Matrix.CreateScale(scaleAToB) * Matrix.CreateRotationZ(rotationAToB.Z * -1) * Matrix.CreateTranslation(translationAToB);
+
                         // Set render target 
                         this.Game.GraphicsDevice.SetRenderTarget(newTexture);
 
@@ -1121,32 +1134,30 @@ namespace ScratchyXna
 
                         // Unset render target 
                         this.Game.GraphicsDevice.SetRenderTarget(null);
+                        this.customTexture = newTexture;
                     }
                     break;
                 case StampMethods.Cutout:
                     {
-                        CustomizeCostume();
+                        //CustomizeCostume();
                         Color[] newPixels = StampAlpha(
                             this.Transform, this.Costume.Texture.Width, this.Costume.Texture.Height, this.Costume.Pixels,
                             otherSprite.Transform, otherSprite.Costume.Texture.Width, otherSprite.Costume.Texture.Height, otherSprite.Costume.Pixels, false);
                         Pixels = newPixels;
-                        newTexture = customTexture;
                     }
                     break;
                 case StampMethods.CutoutInverted:
                     {
-                        CustomizeCostume();
+                        //CustomizeCostume();
                         Color[] newPixels = StampAlpha(
                             this.Transform, this.Costume.Texture.Width, this.Costume.Texture.Height, this.Costume.Pixels,
                             otherSprite.Transform, otherSprite.Costume.Texture.Width, otherSprite.Costume.Texture.Height, otherSprite.Costume.Pixels, true);
                         Pixels = newPixels;
-                        newTexture = customTexture;
                     }
                     break;
                 default:
                     throw new Exception("Sprite.Stamp() does not yet support stampMethod " + stampMethod);
             }
-            this.customTexture = newTexture;
         }
 
         /// <summary>
