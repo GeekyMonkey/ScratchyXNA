@@ -401,6 +401,8 @@ namespace ScratchyXna
                 for (float y = -100; y <= 100; y += GridSize)
                 {
                     DrawLine(new Vector2(-100, y), new Vector2(100, y), 1, gridColor);
+                    DrawLine(new Vector2(-5, 0), new Vector2(5, 0), 1, Color.Red);
+                    DrawLine(new Vector2(0, -5), new Vector2(0, 5), 1, Color.Red);
                 }
             }
             if (GridStyle == GridStyles.Ticks)
@@ -581,6 +583,16 @@ namespace ScratchyXna
         public T AddSprite<T>() where T : Sprite, new()
         {
             T sprite = new T();
+            return (T) AddSprite(sprite);
+        }
+
+        /// <summary>
+        /// Add a sprite to the screen which will be automatically drawn and updated
+        /// </summary>
+        /// <typeparam name="T">Type of sprite</typeparam>
+        /// <returns>The sprite which was added</returns>
+        public Sprite AddSprite(Sprite sprite)
+        {
             Sprites.Add(sprite);
             sprite.Init(this);
             return sprite;
