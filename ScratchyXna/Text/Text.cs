@@ -226,6 +226,36 @@ namespace ScratchyXna
         }
 
         /// <summary>
+        /// Get or set the X position
+        /// </summary>
+        public float X
+        {
+            get
+            {
+                return this.Position.X;
+            }
+            set
+            {
+                this.Position.X = value;
+            }
+        }
+
+        /// <summary>
+        /// Get or set the Y position
+        /// </summary>
+        public float Y
+        {
+            get
+            {
+                return this.Position.Y;
+            }
+            set
+            {
+                this.Position.Y = value;
+            }
+        }
+
+        /// <summary>
         /// Set the horizontal (X) Alignment for this text
         /// </summary>
         /// <param name="alignment">Alignment type</param>

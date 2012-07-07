@@ -89,17 +89,11 @@ namespace ScratchyXna
         private float rotationRadians = 0.0f;
         private Vector2 velocity = Vector2.Zero;
         private Costume costume;
-        private string costumeName;
         private float direction = 0.0f;
         private float speed = 0.0f;
         private List<Costume> SpriteCostumes = new List<Costume>();
         private float Alpha = 1.0f;
         private float layer = 1.0f;
-
-        /// <summary>
-        /// Cutom costume when the costume needs to be modified for this sprite instance
-        /// </summary>
-        private RenderTarget2D customTexture;
 
         /// <summary>
         /// Get or set the size of the sprite where 100% is the default size
@@ -135,13 +129,17 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Get the costume name
+        /// Get the current costume name
         /// </summary>
         public string CostumeName
         {
             get
             {
-                return costumeName;
+                if (Costume == null)
+                {
+                    return "";
+                }
+                return Costume.Name;
             }
         }
 
@@ -151,7 +149,11 @@ namespace ScratchyXna
         /// <param name="name">Name of the costume</param>
         public Costume SetCostume(string name)
         {
-            Costume = Game.LoadCostume(Scene, name);
+            Costume = SpriteCostumes.FirstOrDefault(sc => sc.Name == name);
+            if (Costume == null)
+            {
+                Costume = Game.LoadCostume(Scene, name);
+            }
             return Costume;
         }
 
@@ -173,6 +175,19 @@ namespace ScratchyXna
             if (nextCostumeNumber > SpriteCostumes.Count)
             {
                 nextCostumeNumber = 1;
+            }
+            SetCostume(nextCostumeNumber);
+        }
+
+        /// <summary>
+        /// Switch to the previous costume
+        /// </summary>
+        public void PreviousCostume()
+        {
+            int nextCostumeNumber = GetCostumeNumber() - 1;
+            if (nextCostumeNumber < 1)
+            {
+                nextCostumeNumber = SpriteCostumes.Count;
             }
             SetCostume(nextCostumeNumber);
         }
@@ -205,9 +220,6 @@ namespace ScratchyXna
             set
             {
                 costume = value;
-                costumeName = costume.Name;
-                customTexture = null;
-                this.customTexturePixels = null;
             }
         }
 
@@ -267,7 +279,6 @@ namespace ScratchyXna
                 rotationRadians = MathHelper.ToRadians(rotation);
             }
         }
-
 
         /// <summary>
         /// 2D velocity of this sprite
@@ -478,7 +489,15 @@ namespace ScratchyXna
         public virtual void Draw(SpriteBatch Drawing)
         {
             Vector2 screenPos = Scene.GetScreenPosition(Position);
-            Drawing.Draw(Texture, screenPos, null, SpriteColor * Alpha, rotationRadians, Costume.Center, Scale / Scene.PixelScale, SpriteEffects.None, Depth);
+            Drawing.Draw(Costume.Texture,
+                screenPos,
+                null,
+                SpriteColor * Alpha,
+                rotationRadians,
+                Costume.Center,
+                Scale / Scene.PixelScale,
+                SpriteEffects.None,
+                Depth);
 
             // Draw the collision rect
             if (Scene.DrawSpriteRects)
@@ -487,48 +506,6 @@ namespace ScratchyXna
                 Scene.DrawRect(new RectangleF(Position.X -0.5f, Position.Y -0.5f, 1.0f, 1.0f), Color.Magenta);
             }
         }
-
-        /// <summary>
-        /// Get the current texture for this sprite, either from a custom costume, or the current costume
-        /// </summary>
-        public Texture2D Texture
-        {
-            get
-            {
-                return customTexture ?? costume.Texture;
-            }
-        }
-
-        public Color[] Pixels
-        {
-            get
-            {
-                if (customTexture == null)
-                {
-                    return Costume.Pixels;
-                }
-                if (customTexturePixels == null && customTexture != null)
-                {
-                    customTexturePixels = new Color[customTexture.Width * customTexture.Height];
-                    customTexture.GetData(customTexturePixels);
-                }
-                return customTexturePixels;
-            }
-            set
-            {
-                if (customTexture == null)
-                {
-                    Costume.Pixels = value;
-                }
-                else
-                {
-                    customTexture = new RenderTarget2D(Game.GraphicsDevice, customTexture.Width, customTexture.Height);
-                    customTexturePixels = value;
-                    customTexture.SetData(customTexturePixels);
-                }
-            }
-        }
-        private Color[] customTexturePixels;
 
         /*
         /// <summary>
@@ -546,23 +523,6 @@ namespace ScratchyXna
             }
         }
         */
-
-        /// <summary>
-        /// Get the matrix tranform for this sprite's texture offset, rotation, scale, and position
-        /// </summary>
-        public Matrix Transform
-        {
-            get
-            {
-                // Matrix scaleMatrix = Matrix.CreateScale(Scale);
-                Matrix transform =
-                    Matrix.CreateTranslation(new Vector3(-Costume.Center.X, Costume.Center.Y - costume.Texture.Height, 0f)) *
-                    Matrix.CreateScale(Scale) *
-                    Matrix.CreateRotationZ(rotationRadians) *
-                    Matrix.CreateTranslation(new Vector3(Position, 0));
-                return transform;
-            }
-        }
 
         /// <summary>
         /// Rectangle in -100 to 100 scale
@@ -658,6 +618,22 @@ namespace ScratchyXna
         }
 
         /// <summary>
+        /// Get the matrix tranform for this sprite's texture offset, rotation, scale, and position
+        /// </summary>
+        public Matrix Transform
+        {
+            get
+            {
+                Matrix transform =
+                    Matrix.CreateTranslation(new Vector3(-Costume.Center.X, Costume.Center.Y - costume.Texture.Height, 0f)) *
+                    Matrix.CreateScale(Scale) *
+                    Matrix.CreateRotationZ(rotationRadians) *
+                    Matrix.CreateTranslation(new Vector3(Position, 0));
+                return transform;
+            }
+        }
+
+        /// <summary>
         /// Is this sprite touching another sprite
         /// </summary>
         /// <param name="otherSprite">Sprite to check for collision</param>
@@ -678,8 +654,14 @@ namespace ScratchyXna
 
             // use pixel collision checking
             return IntersectPixels(
-                this.Transform, this.Costume.Texture.Width, this.Costume.Texture.Height, this.Costume.Pixels,
-                otherSprite.Transform, otherSprite.Costume.Texture.Width, otherSprite.Costume.Texture.Height, otherSprite.Costume.Pixels);
+                this.Transform,
+                this.Costume.Texture.Width,
+                this.Costume.Texture.Height,
+                this.Costume.Pixels,
+                otherSprite.Transform,
+                otherSprite.Costume.Texture.Width,
+                otherSprite.Costume.Texture.Height,
+                otherSprite.Costume.Pixels);
         }
 
         /// <summary>
@@ -844,9 +826,9 @@ namespace ScratchyXna
         public void Forever(double seconds, Action callback)
         {
             Scene.ScheduleEvent(seconds, true, callback);
+
         }
-
-
+       /// <summary>
         /// <summary>
         /// Get or set the ghost effect. 0 = fully visible, 100 = fully invisible
         /// </summary>
@@ -1024,33 +1006,6 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Begin creating a custom costume by copying the current costume
-        /// </summary>
-        public void CustomizeCostume()
-        {
-            if (this.customTexture == null)
-            {
-                this.customTexture = new RenderTarget2D(this.Game.GraphicsDevice, Costume.Texture.Width, Costume.Texture.Height);
-                this.customTexturePixels = null;
-
-                // Set render target 
-                this.Game.GraphicsDevice.SetRenderTarget(customTexture);
-
-                // Copy the current costume
-                this.Game.spriteBatch.Begin();
-                this.Game.GraphicsDevice.Clear(Color.Transparent);
-                this.Game.spriteBatch.Draw(this.Costume.Texture, Vector2.Zero, Color.White);
-                this.Game.spriteBatch.End();
-
-                // Unset render target 
-                this.Game.GraphicsDevice.SetRenderTarget(null);
-
-                // Force reload of pixels if needed
-                customTexturePixels = null;
-            }
-        }
-
-        /// <summary>
         /// Stamp another sprite onto this sprite based on their scene positions. The other sprite will be drawn as normal and cropped to the rectangle of the current sprite.
         /// </summary>
         /// <param name="otherSprite">The sprite to stamp onto this one</param>
@@ -1086,20 +1041,22 @@ namespace ScratchyXna
                     throw new Exception("Sprite.Stamp() does not yet support cropping mode " + stampCropping);
             }
 
-            int width = Texture.Width;
-            int height = Texture.Height;
-            RenderTarget2D newTexture = new RenderTarget2D(
-                this.Game.GraphicsDevice,
-                width, height,
-                /*mipMap:*/ false, 
-                /*preferredFormat:*/ SurfaceFormat.Color,
-                /*preferredDepthFormat:*/ DepthFormat.Depth24Stencil8,
-                /*preferredMultiSampleCount:*/ 1,
-                /*usage:*/ RenderTargetUsage.DiscardContents);
+            int width = Costume.Width;
+            int height = Costume.Height;
             switch (stampMethod)
             {
                 case StampMethods.Normal:
                     {
+                        RenderTarget2D newTexture = new RenderTarget2D(
+                            this.Game.GraphicsDevice,
+                            width,
+                            height,
+                            /*mipMap:*/ false,
+                            /*preferredFormat:*/ SurfaceFormat.Color,
+                            /*preferredDepthFormat:*/ DepthFormat.Depth24Stencil8,
+                            /*preferredMultiSampleCount:*/ 1,
+                            /*usage:*/ RenderTargetUsage.DiscardContents);
+
                         // Calculate a matrix which transforms from A's local space into
                         // world space and then into B's local space
                         Matrix transformAToB = otherSprite.Transform * Matrix.Invert(this.Transform);
@@ -1114,39 +1071,36 @@ namespace ScratchyXna
                         this.Game.GraphicsDevice.Clear(Color.Transparent);
                         this.Game.spriteBatch.Begin();
                         // Copy the current costume
-                        this.Game.spriteBatch.Draw(this.Texture, Vector2.Zero, Color.White);
+                        this.Game.spriteBatch.Draw(Costume.Texture, Vector2.Zero, Color.White);
                         // Draw the other sprite
-                        this.Game.spriteBatch.Draw(otherSprite.Texture, position, null, Color.White, rotation, Vector2.Zero, otherSprite.Scale / Scale, SpriteEffects.None, 0f);
+                        this.Game.spriteBatch.Draw(otherSprite.Costume.Texture, position, null, Color.White, rotation, Vector2.Zero, otherSprite.Scale / Scale, SpriteEffects.None, 0f);
                         this.Game.spriteBatch.End();
 
                         // Unset render target 
                         this.Game.GraphicsDevice.SetRenderTarget(null);
+
+                        Costume.Texture = newTexture;
                     }
                     break;
                 case StampMethods.Cutout:
                     {
-                        CustomizeCostume();
                         Color[] newPixels = StampAlpha(
                             this.Transform, this.Costume.Texture.Width, this.Costume.Texture.Height, this.Costume.Pixels,
                             otherSprite.Transform, otherSprite.Costume.Texture.Width, otherSprite.Costume.Texture.Height, otherSprite.Costume.Pixels, false);
-                        Pixels = newPixels;
-                        newTexture = customTexture;
+                        Costume.Pixels = newPixels;
                     }
                     break;
                 case StampMethods.CutoutInverted:
                     {
-                        CustomizeCostume();
                         Color[] newPixels = StampAlpha(
                             this.Transform, this.Costume.Texture.Width, this.Costume.Texture.Height, this.Costume.Pixels,
                             otherSprite.Transform, otherSprite.Costume.Texture.Width, otherSprite.Costume.Texture.Height, otherSprite.Costume.Pixels, true);
-                        Pixels = newPixels;
-                        newTexture = customTexture;
+                        Costume.Pixels = newPixels;
                     }
                     break;
                 default:
                     throw new Exception("Sprite.Stamp() does not yet support stampMethod " + stampMethod);
             }
-            this.customTexture = newTexture;
         }
 
         /// <summary>

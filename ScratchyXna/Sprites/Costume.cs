@@ -18,6 +18,7 @@ namespace ScratchyXna
         private HorizontalAlignments xCenter = HorizontalAlignments.Center;
         private VerticalAlignments yCenter = VerticalAlignments.Center;
         private Scene scene;
+        private Texture2D texture;
 
         /// <summary>
         /// Name of the costume
@@ -33,8 +34,37 @@ namespace ScratchyXna
         /// </summary>
         internal Texture2D Texture
         {
-            get;
-            set;
+            get
+            {
+                return texture;
+            }
+            set
+            {
+                texture = value;
+                CalculateCenter();
+            }
+        }
+
+        /// <summary>
+        /// Get the width of the costume
+        /// </summary>
+        public int Width
+        {
+            get
+            {
+                return Texture.Width;
+            }
+        }
+
+        /// <summary>
+        /// Get the height of the costume
+        /// </summary>
+        public int Height
+        {
+            get
+            {
+                return Texture.Height;
+            }
         }
 
         /// <summary>
@@ -114,6 +144,9 @@ namespace ScratchyXna
             }
         }
 
+        /// <summary>
+        /// The pixels in the current texture
+        /// </summary>
         public Color[] Pixels
         {
             get
@@ -132,5 +165,31 @@ namespace ScratchyXna
             }
         }
         private Color[] pixels;
+
+        /// <summary>
+        /// Begin creating a custom costume by copying the current costume
+        /// </summary>
+        public Costume Copy(string name = null)
+        {
+            if (name == null)
+            {
+                name = this.Name + "_Copy";
+            }
+
+            Costume newCostume = new Costume
+            {
+                Name = name,
+                xCenter = this.xCenter,
+                yCenter = this.yCenter,
+                scene = this.scene
+            };
+
+            newCostume.Pixels = this.Pixels;
+
+            newCostume.CalculateCenter();
+            return newCostume;
+        }
+
+
     }
 }
