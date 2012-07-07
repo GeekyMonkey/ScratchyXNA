@@ -358,5 +358,19 @@ namespace ScratchyXna
 
             base.Draw(gameTime);
         }
+
+        /// <summary>
+        /// Convert an XNA pixel position to a -100 to 100 position
+        /// </summary>
+        /// <param name="X">pixel X</param>
+        /// <param name="Y">pixel Y</param>
+        /// <returns>Position in -100 to 100 range</returns>
+        public Vector2 PixelToPosition(int X, int Y)
+        {
+            float PixelScale = 200f / (float)GraphicsDevice.Viewport.Height;
+            return new Vector2(
+                (X - GraphicsDevice.Viewport.Bounds.Center.X) * PixelScale,
+                (GraphicsDevice.Viewport.Bounds.Center.Y - Y) * PixelScale);
+        }
     }
 }
