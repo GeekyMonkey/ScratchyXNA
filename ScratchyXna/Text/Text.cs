@@ -138,6 +138,17 @@ namespace ScratchyXna
         }
 
         /// <summary>
+        /// Get the game that owns this text
+        /// </summary>
+        public ScratchyXnaGame Game
+        {
+            get
+            {
+                return ScratchyXnaGame.ScratchyGame;
+            }
+        }
+
+        /// <summary>
         /// The text to display
         /// </summary>
         public string Value
@@ -237,6 +248,7 @@ namespace ScratchyXna
             set
             {
                 this.Position.X = value;
+                Dirty = true;
             }
         }
 
@@ -252,6 +264,7 @@ namespace ScratchyXna
             set
             {
                 this.Position.Y = value;
+                Dirty = true;
             }
         }
 
@@ -404,6 +417,70 @@ namespace ScratchyXna
                 Draw(drawing);
             }
             ready = true;
+        }
+
+        /// <summary>
+        /// Create a sprite copy of the current state of this text object
+        /// </summary>
+        /// <returns>A new sprite</returns>
+        public TextSprite CreateSprite()
+        {
+            if (Dirty)
+            {
+                ProcessText();
+            }
+            Vector2 screenPos = this.ScreenPosition;
+            Vector2 pos = this.Game.PixelToPosition((int)screenPos.X, (int)screenPos.Y);
+            float PixelScale = 200f / (float)this.Game.GraphicsDevice.Viewport.Height;
+            TextSprite textSprite = new TextSprite
+            {
+                Costume = new Costume
+                {
+                    Name = "TextSprite",
+                },
+                Layer = this.Layer,
+                Position = this.Position, // pos,
+                Scale = PixelScale // 1f / (this.ScaleToDraw) //todo
+            };
+            var customTexture = new RenderTarget2D(this.Game.GraphicsDevice, (int)this.Size.X, (int)this.Size.Y);
+            textSprite.Costume.Texture = customTexture;
+            textSprite.Costume.XCenter = this.Alignment;
+            switch (this.VerticalAlign)
+            {
+                case VerticalAlignments.Top:
+                    textSprite.Costume.YCenter = VerticalAlignments.Top;
+                    break;
+                case VerticalAlignments.Center:
+                    textSprite.Costume.YCenter = VerticalAlignments.Center;
+                    break;
+                case VerticalAlignments.Bottom:
+                    textSprite.Costume.YCenter = VerticalAlignments.Bottom;
+                    break;
+            }
+
+            // Set render target 
+            this.Game.GraphicsDevice.SetRenderTarget(customTexture);
+
+            // Copy the current costume
+            this.Game.spriteBatch.Begin();
+            this.Game.GraphicsDevice.Clear(Color.Transparent);
+            this.Game.spriteBatch.DrawString(
+                Font,
+                ValueToDraw,
+                Vector2.Zero,
+                Color,
+                Rotation,
+                Vector2.Zero,
+                ScaleToDraw * FontScale,
+                SpriteEffects.None,
+                Depth
+                );
+            this.Game.spriteBatch.End();
+
+            // Unset render target 
+            this.Game.GraphicsDevice.SetRenderTarget(null);
+
+            return textSprite;
         }
     }
 }

@@ -116,6 +116,9 @@
     <Compile Include="..\ScratchyXna\Text\TextAnimations.cs">
       <Link>Text\TextAnimations.cs</Link>
     </Compile>
+    <Compile Include="..\ScratchyXna\Text\TextSprite.cs">
+      <Link>Text\TextSprite.cs</Link>
+    </Compile>
     <Compile Include="..\ScratchyXna\Time\ScheduledEvent.cs">
       <Link>Time\ScheduledEvent.cs</Link>
     </Compile>
