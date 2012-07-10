@@ -535,7 +535,7 @@ namespace ScratchyXna
                 Matrix transform = Transform;
 
                 var rectangle = new Microsoft.Xna.Framework.Rectangle(
-                    0, 0, costume.Texture.Width, costume.Texture.Height);
+                    0, 0, Costume.Width, Costume.Height);
                 Vector2 leftTop = new Vector2(rectangle.Left, rectangle.Top);
                 Vector2 rightTop = new Vector2(rectangle.Right, rectangle.Top);
                 Vector2 leftBottom = new Vector2(rectangle.Left, rectangle.Bottom);
@@ -615,22 +615,6 @@ namespace ScratchyXna
                 || spriteRect.Left > Scene.MaxX
                 || spriteRect.Top < -100
                 || spriteRect.Bottom > 100;
-        }
-
-        /// <summary>
-        /// Get the matrix tranform for this sprite's texture offset, rotation, scale, and position
-        /// </summary>
-        public Matrix Transform
-        {
-            get
-            {
-                Matrix transform =
-                    Matrix.CreateTranslation(new Vector3(-Costume.Center.X, Costume.Center.Y - costume.Texture.Height, 0f)) *
-                    Matrix.CreateScale(Scale) *
-                    Matrix.CreateRotationZ(rotationRadians) *
-                    Matrix.CreateTranslation(new Vector3(Position, 0));
-                return transform;
-            }
         }
 
         /// <summary>
@@ -1006,6 +990,41 @@ namespace ScratchyXna
         }
 
         /// <summary>
+        /// Get the matrix tranform for this sprite's texture offset, rotation, scale, and position
+        /// </summary>
+        public Matrix Transform
+        {
+            get
+            {
+                Vector2 pos = Position;
+                Matrix transform =
+                    Matrix.CreateTranslation(new Vector3(Costume.Center.X - costume.Width, Costume.Center.Y - costume.Height, 0f)) *
+                    Matrix.CreateScale(Scale) *
+                    Matrix.CreateRotationZ(rotationRadians * -1) *
+                    Matrix.CreateTranslation(new Vector3(pos, 0));
+                return transform;
+            }
+        }
+
+        /// <summary>
+        /// Get the matrix tranform for this sprite's texture offset, rotation, scale, and position
+        /// </summary>
+        public Matrix TransformAlt
+        {
+            get
+            {
+                Vector2 pos = Position;
+                pos.Y = pos.Y * -1;
+                Matrix transform =
+                    Matrix.CreateTranslation(new Vector3(-Costume.Center.X, -Costume.Center.Y, 0f)) *
+                    Matrix.CreateScale(Scale) *
+                    Matrix.CreateRotationZ(rotationRadians) *
+                    Matrix.CreateTranslation(new Vector3(pos, 0));
+                return transform;
+            }
+        }
+
+        /// <summary>
         /// Stamp another sprite onto this sprite based on their scene positions. The other sprite will be drawn as normal and cropped to the rectangle of the current sprite.
         /// </summary>
         /// <param name="otherSprite">The sprite to stamp onto this one</param>
@@ -1059,7 +1078,10 @@ namespace ScratchyXna
 
                         // Calculate a matrix which transforms from A's local space into
                         // world space and then into B's local space
-                        Matrix transformAToB = otherSprite.Transform * Matrix.Invert(this.Transform);
+                        Matrix TransformA = this.TransformAlt;
+                        Matrix TransformB = otherSprite.TransformAlt;
+
+                        Matrix transformAToB = TransformB * Matrix.Invert(TransformA);
                         Vector2 position;
                         float rotation;
                         float scale;
@@ -1072,8 +1094,17 @@ namespace ScratchyXna
                         this.Game.spriteBatch.Begin();
                         // Copy the current costume
                         this.Game.spriteBatch.Draw(Costume.Texture, Vector2.Zero, Color.White);
+
                         // Draw the other sprite
-                        this.Game.spriteBatch.Draw(otherSprite.Costume.Texture, position, null, Color.White, rotation, Vector2.Zero, otherSprite.Scale / Scale, SpriteEffects.None, 0f);
+                        this.Game.spriteBatch.Draw(otherSprite.Costume.Texture,
+                            position,
+                            null,
+                            otherSprite.SpriteColor * otherSprite.Alpha,
+                            rotation,
+                            Vector2.Zero, // otherSprite.Costume.Center,
+                            otherSprite.Scale / Scale,
+                            SpriteEffects.None,
+                            0f);
                         this.Game.spriteBatch.End();
 
                         // Unset render target 
@@ -1124,11 +1155,13 @@ namespace ScratchyXna
             // world space and then into B's local space
             Matrix transformAToB = transformA * Matrix.Invert(transformB);
 
+            /*
             Vector3 scale;
             Quaternion rotation;
             Vector3 translation;
             transformAToB.Decompose(out scale, out rotation, out translation);
-            transformAToB = Matrix.CreateScale(scale) * Matrix.CreateRotationZ(rotation.Z * -1) * Matrix.CreateTranslation(translation);
+            */
+            //transformAToB = Matrix.CreateScale(scale) * Matrix.CreateRotationZ(rotation.Z) * Matrix.CreateTranslation(translation);
 
             // When a point moves in A's local space, it moves in B's local space with a
             // fixed direction and distance proportional to the movement in A.

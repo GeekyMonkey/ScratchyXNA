@@ -41,6 +41,7 @@ namespace ScratchyXna
             set
             {
                 texture = value;
+                pixels = null;
                 CalculateCenter();
             }
         }
@@ -169,13 +170,16 @@ namespace ScratchyXna
         /// <summary>
         /// Begin creating a custom costume by copying the current costume
         /// </summary>
-        public Costume Copy(string name = null)
+        public Costume Copy()
         {
-            if (name == null)
-            {
-                name = this.Name + "_Copy";
-            }
+            return Copy(this.Name + "_Copy");
+        }
 
+        /// <summary>
+        /// Begin creating a custom costume by copying the current costume
+        /// </summary>
+        public Costume Copy(string name)
+        {
             Costume newCostume = new Costume
             {
                 Name = name,
@@ -189,7 +193,6 @@ namespace ScratchyXna
             newCostume.CalculateCenter();
             return newCostume;
         }
-
 
     }
 }
