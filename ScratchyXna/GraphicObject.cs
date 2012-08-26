@@ -36,19 +36,7 @@ namespace ScratchyXna
         /// Position of this text in -100 to 100 range
         /// </summary>
         public Vector2 Position;
-
-        /// <summary>
-        /// Move to another point in a set amount of time and then stop
-        /// </summary>
-        /// <param name="position">Position to move to</param>
-        /// <param name="seconds">How long to take to get there</param>
-        public void GlideTo(Vector2 position, float seconds)
-        {
-            glidePosition = position;
-            glideTime = this.Scene.Game.gameTime.TotalGameTime + TimeSpan.FromSeconds(seconds);
-            OnGlideComplete = null;
-        }
-
+        
         /// <summary>
         /// Move to another point in a set amount of time and then stop
         /// </summary>
@@ -60,6 +48,16 @@ namespace ScratchyXna
             glidePosition = position;
             glideTime = this.Scene.Game.gameTime.TotalGameTime + TimeSpan.FromSeconds(seconds);
             OnGlideComplete = glideComplete;
+        }
+
+        /// <summary>
+        /// Move to another point in a set amount of time and then stop
+        /// </summary>
+        /// <param name="position">Position to move to</param>
+        /// <param name="seconds">How long to take to get there</param>
+        public void GlideTo(Vector2 position, float seconds)
+        {
+            GlideTo(position, seconds, null);
         }
 
         /// <summary>
@@ -85,6 +83,26 @@ namespace ScratchyXna
             GlideTo(new Vector2(X, Y), seconds, glideComplete);
         }
 
+        /// <summary>
+        /// Move to another sprite's position in a set amount of time and then stop
+        /// </summary>
+        /// <param name="otherSprite">Sprite to move to</param>
+        /// <param name="seconds">How long to take to get there</param>
+        public void GlideTo(GraphicObject otherSprite, float seconds, Action glideComplete)
+        {
+            GlideTo(otherSprite.Position, seconds, glideComplete);
+        }
+
+        /// <summary>
+        /// Move to another sprite's position in a set amount of time and then stop
+        /// </summary>
+        /// <param name="otherSprite">Sprite to move to</param>
+        /// <param name="seconds">How long to take to get there</param>
+        public void GlideTo(GraphicObject otherSprite, float seconds)
+        {
+            GlideTo(otherSprite.Position, seconds, null);
+        }
+
         private Vector2? glidePosition = null;
         private TimeSpan glideTime;
         private Action OnGlideComplete = null;
@@ -106,26 +124,6 @@ namespace ScratchyXna
         public void GlideStop()
         {
             glidePosition = null;
-        }
-
-        /// <summary>
-        /// Move to another sprite's position in a set amount of time and then stop
-        /// </summary>
-        /// <param name="otherSprite">Sprite to move to</param>
-        /// <param name="seconds">How long to take to get there</param>
-        public void GlideTo(GraphicObject otherSprite, float seconds, Action glideComplete)
-        {
-            GlideTo(otherSprite.Position, seconds, glideComplete);
-        }
-
-        /// <summary>
-        /// Move to another sprite's position in a set amount of time and then stop
-        /// </summary>
-        /// <param name="otherSprite">Sprite to move to</param>
-        /// <param name="seconds">How long to take to get there</param>
-        public void GlideTo(GraphicObject otherSprite, float seconds)
-        {
-            GlideTo(otherSprite.Position, seconds, null);
         }
 
         /// <summary>
@@ -281,6 +279,16 @@ namespace ScratchyXna
         public void DirectionTowards(Vector2 otherPoint)
         {
             Direction = AngleTowards(otherPoint);
+        }
+
+        /// <summary>
+        /// Set the position of this text in -100 to 100 range
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void SetPosition(double x, double y)
+        {
+            this.Position = new Vector2((float)x, (float)y);
         }
 
         /// <summary>

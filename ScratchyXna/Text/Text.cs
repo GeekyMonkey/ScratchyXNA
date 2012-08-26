@@ -181,16 +181,6 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Set the position of this text in -100 to 100 range
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        public void SetPosition(double x, double y)
-        {
-            this.Position = new Vector2((float)x, (float)y);
-        }
-
-        /// <summary>
         /// Get or set the X position
         /// </summary>
         public float X
@@ -285,7 +275,12 @@ namespace ScratchyXna
         /// <param name="gameTime">Time since the last update</param>
         public void Update(GameTime gameTime)
         {
+            Vector2 prevPosition = Position;
             UpdateGraphicObject(gameTime);
+            if (prevPosition != Position)
+            {
+                ProcessText();
+            }
 
             if (AnimationStartTotalSeconds == 0.0)
             {
