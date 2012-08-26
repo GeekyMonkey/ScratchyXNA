@@ -83,6 +83,9 @@
     <Compile Include="..\ScratchyXna\Enumerations\StampMethods.cs">
       <Link>Enumerations\StampMethods.cs</Link>
     </Compile>
+    <Compile Include="..\ScratchyXna\GraphicObject.cs">
+      <Link>GraphicObject.cs</Link>
+    </Compile>
     <Compile Include="..\ScratchyXna\Input\KeyboardInput.cs">
       <Link>Input\KeyboardInput.cs</Link>
     </Compile>

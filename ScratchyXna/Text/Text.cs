@@ -7,17 +7,12 @@ using Microsoft.Xna.Framework;
 
 namespace ScratchyXna
 {
-    public class Text : ScratchyObject, IDrawable
+    public class Text : GraphicObject
     {
         /// <summary>
         /// Add this to your text value to move down to the next line
         /// </summary>
         public static string NewLine = "\r\n";
-
-        /// <summary>
-        /// Is this text visible
-        /// </summary>
-        public bool Visible = true;
 
         /// <summary>
         /// Color used to draw this text
@@ -28,11 +23,6 @@ namespace ScratchyXna
         /// Font used to draw this text
         /// </summary>
         public SpriteFont Font;
-
-        /// <summary>
-        /// Position of this text in -100 to 100 range
-        /// </summary>
-        public Vector2 Position;
 
         /// <summary>
         /// Horizontal (X) alignment
@@ -48,11 +38,6 @@ namespace ScratchyXna
         /// The one animation type for this text
         /// </summary>
         public TextAnimations AnimationType = TextAnimations.None;
-
-        /// <summary>
-        /// Screen that owns this text
-        /// </summary>
-        public Scene Scene;
 
         /// <summary>
         /// The speed of the animation. Lower is faster.  Default is 0.1
@@ -75,11 +60,6 @@ namespace ScratchyXna
         private bool AnimationComplete = true;
 
         /// <summary>
-        /// Rotation in degrees
-        /// </summary>
-        public float Rotation = 0.0f;
-
-        /// <summary>
         /// Draw depth
         /// </summary>
         internal float Depth
@@ -87,21 +67,6 @@ namespace ScratchyXna
             get
             {
                 return 0.5f - (Layer) / 1000;
-            }
-        }
-
-        /// <summary>
-        /// Specifies the order that the sprites are drawn. Default is 1. Layer 1 is in the back, and larger numbers are drawn on top of this.
-        /// </summary>
-        public float Layer
-        {
-            get
-            {
-                return layer;
-            }
-            set
-            {
-                layer = value;
             }
         }
 
@@ -126,26 +91,15 @@ namespace ScratchyXna
         private bool Dirty = true;
         private Vector2 ScreenPosition;
         private Vector2 Size;
-        private float ScaleToDraw = 1.0f;
-        private float layer = 100.0f;
-        
+        private float ScaleToDraw = 1.0f;        
 
         /// <summary>
         /// Construct a text object
         /// </summary>
         public Text()
         {
-        }
-
-        /// <summary>
-        /// Get the game that owns this text
-        /// </summary>
-        public ScratchyXnaGame Game
-        {
-            get
-            {
-                return ScratchyXnaGame.ScratchyGame;
-            }
+            // Default text on top of other elements
+            layer = 100.0f;
         }
 
         /// <summary>
@@ -331,6 +285,8 @@ namespace ScratchyXna
         /// <param name="gameTime">Time since the last update</param>
         public void Update(GameTime gameTime)
         {
+            UpdateGraphicObject(gameTime);
+
             if (AnimationStartTotalSeconds == 0.0)
             {
                 AnimationStartTotalSeconds = gameTime.TotalGameTime.TotalSeconds;
@@ -410,7 +366,7 @@ namespace ScratchyXna
                     );
         }
 
-        public void DrawObject(SpriteBatch drawing)
+        public override void DrawObject(SpriteBatch drawing)
         {
             if (Visible && ValueToDraw != null)
             {

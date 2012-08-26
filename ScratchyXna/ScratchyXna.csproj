@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GraphicObject.cs" />
     <Compile Include="Data\PlayerData.cs" />
     <Compile Include="Enumerations\BackButtonBehaviours.cs" />
     <Compile Include="Enumerations\StampMethods.cs" />

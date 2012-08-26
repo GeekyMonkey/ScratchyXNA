@@ -10,44 +10,12 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ScratchyXna
 {
-    abstract public class Sprite : ScratchyObject, IDrawable
+    abstract public class Sprite : GraphicObject 
     {
-        /// <summary>
-        /// Is this sprite visible
-        /// </summary>
-        public bool Visible = true;
-
-        /// <summary>
-        /// The game scene that owns this sprite
-        /// </summary>
-        public Scene Scene
-        {
-            get
-            {
-                return scene;
-            }
-            set
-            {
-                scene = value;
-                Game = scene.Game;
-            }
-        }
-        private Scene scene;
-
         /// <summary>
         /// The game content manager
         /// </summary>
         public ContentManager Content;
-
-        /// <summary>
-        /// The game
-        /// </summary>
-        public ScratchyXnaGame Game;
-
-        /// <summary>
-        /// Position of this sprite in -100 to 100 range
-        /// </summary>
-        public Vector2 Position = Vector2.Zero;
 
         /// <summary>
         /// Scale (1.0 is normal)
@@ -70,30 +38,9 @@ namespace ScratchyXna
             }
         }
 
-        /// <summary>
-        /// Specifies the order that the sprites are drawn. Default is 1. Layer 1 is in the back, and larger numbers are drawn on top of this.
-        /// </summary>
-        public float Layer
-        {
-            get
-            {
-                return layer;
-            }
-            set
-            {
-                layer = value;
-            }
-        }
-
-        private float rotation = 0.0f;
-        private float rotationRadians = 0.0f;
-        private Vector2 velocity = Vector2.Zero;
         private Costume costume;
-        private float direction = 0.0f;
-        private float speed = 0.0f;
         private List<Costume> SpriteCostumes = new List<Costume>();
         private float Alpha = 1.0f;
-        private float layer = 1.0f;
 
         /// <summary>
         /// Get or set the size of the sprite where 100% is the default size
@@ -265,43 +212,6 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Rotation in degrees
-        /// </summary>
-        public float Rotation
-        {
-            get
-            {
-                return rotation;
-            }
-            set
-            {
-                rotation = value;
-                rotationRadians = MathHelper.ToRadians(rotation);
-            }
-        }
-
-        /// <summary>
-        /// 2D velocity of this sprite
-        /// </summary>
-        public Vector2 Velocity
-        {
-            get
-            {
-                return velocity;
-            }
-            set
-            {
-                velocity = value;
-                speed = velocity.Length();
-                if (speed != 0f)
-                {
-                    float angle = (float)Math.Atan2(velocity.Y, velocity.X);
-                    direction = (angle < 0) ? MathHelper.ToDegrees(angle + MathHelper.TwoPi) : MathHelper.ToDegrees(angle);
-                }
-            }
-        }
-
-        /// <summary>
         /// X position in range -100 to 100
         /// </summary>
         public double X
@@ -360,40 +270,6 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Direction that the sprite is moving in (right = 0, up = 90, left = 180, down = 270)
-        /// </summary>
-        public float Direction
-        {
-            get
-            {
-                return direction;
-            }
-            set
-            {
-                direction = value;
-                velocity = Vector2.UnitX * speed;
-                velocity = Vector2.Transform(velocity, Matrix.CreateRotationZ(MathHelper.ToRadians(direction)));
-            }
-        }
-
-        /// <summary>
-        /// Speed that the sprite is moving
-        /// </summary>
-        public float Speed
-        {
-            get
-            {
-                return speed;
-            }
-            set
-            {
-                speed = value;
-                velocity = Vector2.UnitX * speed;
-                velocity = Vector2.Transform(velocity, Matrix.CreateRotationZ(MathHelper.ToRadians(direction)));
-            }
-        }
-
-        /// <summary>
         /// Show this sprite if it's hidden
         /// </summary>
         public void Show()
@@ -432,27 +308,7 @@ namespace ScratchyXna
         public void UpdateSprite(GameTime gameTime)
         {
             Update(gameTime);
-
-            // Glide it
-            if (glidePosition != null) {
-                float secondsToTarget = (float)(glideTime - gameTime.TotalGameTime).TotalSeconds;
-                if (secondsToTarget <= 0)
-                {
-                    // Finished glide
-                    Position = glidePosition.Value;
-                    glidePosition = null;
-                    Speed = 0;
-                }
-                else
-                {
-                    float distanceToTarget = DistanceTo(glidePosition.Value);
-                    DirectionTowards(glidePosition.Value);
-                    Speed = distanceToTarget / secondsToTarget / 100f;
-                }
-            }
-
-            // Move it
-            Position += (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds * Game.SpeedMultiplier);
+            UpdateGraphicObject(gameTime);
         }
 
         /// <summary>
@@ -468,7 +324,7 @@ namespace ScratchyXna
         /// Draw this sprite.  The base implementation does standard drawing
         /// </summary>
         /// <param name="Drawing">SpriteBatch drawing context</param>
-        public void DrawObject(SpriteBatch Drawing)
+        public override void DrawObject(SpriteBatch Drawing)
         {
             if (Visible == true && Costume != null)
             {
@@ -773,26 +629,6 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Get the distance between this sprites center point and another sprite center point
-        /// </summary>
-        /// <param name="OtherSprite">The other sprite to measure to</param>
-        /// <returns>The distance in -100 to 100 scale</returns>
-        public float DistanceTo(Sprite OtherSprite)
-        {
-            return Vector2.Distance(this.Position, OtherSprite.Position);
-        }
-
-        /// <summary>
-        /// Get the distance between this sprites center point and another point
-        /// </summary>
-        /// <param name="OtherSprite">The other sprite to measure to</param>
-        /// <returns>The distance in -100 to 100 scale</returns>
-        public float DistanceTo(Vector2 Point)
-        {
-            return Vector2.Distance(this.Position, Point);
-        }
-
-        /// <summary>
         /// Schedule an action to occur once in the future
         /// </summary>
         /// <param name="seconds">Seconds before the action</param>
@@ -826,151 +662,6 @@ namespace ScratchyXna
             {
                 Alpha = Math.Max(0.0f, Math.Min(1.0f, ((100f - value) / 100f)));
             }
-        }
-
-        /// <summary>
-        /// Get the angle between this object and another point
-        /// </summary>
-        /// <param name="otherPoint">Point to look at</param>
-        public float AngleTowards(Vector2 otherPoint)
-        {
-            Vector2 differenceVector = otherPoint - this.Position;
-            return MathHelper.ToDegrees((float)Math.Atan2(differenceVector.Y, differenceVector.X));
-        }
-
-        /// <summary>
-        /// Set the direction of this sprite towards another point
-        /// </summary>
-        /// <param name="otherPoint">Point to go to</param>
-        public void DirectionTowards(Vector2 otherPoint)
-        {
-            Direction = AngleTowards(otherPoint);
-        }
-
-        /// <summary>
-        /// Set the direction of this sprite towards another point
-        /// </summary>
-        /// <param name="otherSprite">Sprite to go to</param>
-        public void DirectionTowards(Sprite otherSprite)
-        {
-            Direction = AngleTowards(otherSprite.Position);
-        }
-
-        /// <summary>
-        /// Set the sprite's direction and speed based on which key is down
-        /// </summary>
-        /// <param name="keyboard">Keyboard input device</param>
-        /// <param name="speed">Speed if any direction keys are pressed</param>
-        public void DirectionFrom(KeyboardInput keyboard, float speed)
-        {
-            Speed = speed;
-            if (keyboard.KeyDown(Keys.Right))
-            {
-                Direction = 0;
-                if (keyboard.KeyDown(Keys.Up))
-                {
-                    Direction = 45;
-                }
-                else if (keyboard.KeyDown(Keys.Down))
-                {
-                    Direction = -45;
-                }
-            }
-            else if (keyboard.KeyDown(Keys.Left))
-            {
-                Direction = 180;
-                if (keyboard.KeyDown(Keys.Up))
-                {
-                    Direction = 135;
-                }
-                else if (keyboard.KeyDown(Keys.Down))
-                {
-                    Direction = -135;
-                }
-            }
-            else if (keyboard.KeyDown(Keys.Up))
-            {
-                Direction = 90;
-            }
-            else if (keyboard.KeyDown(Keys.Down))
-            {
-                Direction = -90;
-            }
-            else
-            {
-                Speed = 0;
-            }
-        }
-
-        /// <summary>
-        /// Rotate this sprite towards another point
-        /// </summary>
-        /// <param name="otherPoint">Point to go to</param>
-        /// <param name="adjustment">Depending on the costume, you may need to adjust by 90 degrees or some other amount</param>
-        public void RotateTowards(Vector2 otherPoint, float adjustment)
-        {
-            Rotation = AngleTowards(otherPoint) * -1 + adjustment;
-        }
-        /// <summary>
-        /// Rotate this sprite towards another point
-        /// </summary>
-        /// <param name="otherPoint">Point to go to</param>
-        /// <param name="adjustment">Depending on the costume, you may need to adjust by 90 degrees or some other amount</param>
-        public void RotateTowards(Vector2 otherPoint)
-        {
-            RotateTowards(otherPoint, 0f);
-        }
-
-        /// <summary>
-        /// Rotate this sprite towards another point
-        /// </summary>
-        /// <param name="otherSprite">Sprite to look at</param>
-        /// <param name="adjustment">Depending on the costume, you may need to adjust by 90 degrees or some other amount</param>
-        public void RotateTowards(Sprite otherSprite, float adjustment)
-        {
-            Rotation = AngleTowards(otherSprite.Position) * -1 + adjustment;
-        }
-
-        /// <summary>
-        /// Move to another point in a set amount of time and then stop
-        /// </summary>
-        /// <param name="position">Position to move to</param>
-        /// <param name="seconds">How long to take to get there</param>
-        public void GlideTo(Vector2 position, float seconds)
-        {
-            glidePosition = position;
-            glideTime = this.Scene.Game.gameTime.TotalGameTime + TimeSpan.FromSeconds(seconds);
-        }
-        private Vector2? glidePosition = null;
-        private TimeSpan glideTime;
-
-        /// <summary>
-        /// Is this sprite currently gliding towards a point
-        /// </summary>
-        public bool Gliding
-        {
-            get
-            {
-                return (glidePosition != null);
-            }
-        }
-
-        /// <summary>
-        /// Stop the current glide
-        /// </summary>
-        public void GlideStop()
-        {
-            glidePosition = null;
-        }
-
-        /// <summary>
-        /// Move to another sprite's position in a set amount of time and then stop
-        /// </summary>
-        /// <param name="otherSprite">Sprite to move to</param>
-        /// <param name="seconds">How long to take to get there</param>
-        public void GlideTo(Sprite otherSprite, float seconds)
-        {
-            GlideTo(otherSprite.Position, seconds);
         }
 
         /// <summary>
