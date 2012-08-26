@@ -188,6 +188,7 @@ namespace ScratchyXna
                 scene = this.scene
             };
 
+            newCostume.Texture = new Texture2D(ScratchyXnaGame.ScratchyGame.GraphicsDevice, this.Width, this.Height);
             newCostume.Pixels = this.Pixels;
 
             newCostume.CalculateCenter();
