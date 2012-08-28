@@ -132,6 +132,10 @@ namespace ScratchyXna
         {
             T scene = new T();
             string sceneName = (name ?? typeof(T).Name.ToLower().Replace("screen", "").Replace("scene","")).ToLower();
+            if (Scenes.ContainsKey(sceneName))
+            {
+                Scenes.Remove(sceneName);
+            }
             Scenes.Add(sceneName, scene);
             return scene;
         }
