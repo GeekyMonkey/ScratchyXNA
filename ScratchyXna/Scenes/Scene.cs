@@ -546,9 +546,9 @@ namespace ScratchyXna
         /// </summary>
         /// <param name="seconds">Seconds before the action</param>
         /// <param name="callback">Action callback function</param>
-        public void Wait(double seconds, Action callback)
+        public ScheduledEvent Wait(double seconds, Action callback)
         {
-            ScheduleEvent(seconds, false, callback);
+            return ScheduleEvent(seconds, false, callback);
         }
 
         /// <summary>
@@ -556,9 +556,9 @@ namespace ScratchyXna
         /// </summary>
         /// <param name="seconds">Seconds between action</param>
         /// <param name="callback">Action callback function</param>
-        public void Forever(double seconds, Action callback)
+        public ScheduledEvent Forever(double seconds, Action callback)
         {
-            ScheduleEvent(seconds, true, callback);
+            return ScheduleEvent(seconds, true, callback);
         }
 
         /// <summary>

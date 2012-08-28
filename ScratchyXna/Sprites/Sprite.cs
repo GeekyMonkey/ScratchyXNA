@@ -633,9 +633,9 @@ namespace ScratchyXna
         /// </summary>
         /// <param name="seconds">Seconds before the action</param>
         /// <param name="callback">Action callback function</param>
-        public void Wait(double seconds, Action callback)
+        public ScheduledEvent Wait(double seconds, Action callback)
         {
-            Scene.ScheduleEvent(seconds, false, callback);
+            return Scene.ScheduleEvent(seconds, false, callback);
         }
 
         /// <summary>
@@ -643,11 +643,11 @@ namespace ScratchyXna
         /// </summary>
         /// <param name="seconds">Seconds between action</param>
         /// <param name="callback">Action callback function</param>
-        public void Forever(double seconds, Action callback)
+        public ScheduledEvent Forever(double seconds, Action callback)
         {
-            Scene.ScheduleEvent(seconds, true, callback);
-
+            return Scene.ScheduleEvent(seconds, true, callback);
         }
+
        /// <summary>
         /// <summary>
         /// Get or set the ghost effect. 0 = fully visible, 100 = fully invisible
