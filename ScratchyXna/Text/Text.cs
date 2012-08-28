@@ -348,17 +348,17 @@ namespace ScratchyXna
         /// <param name="Drawing">SpriteBatch drawing context</param>
         public void Draw(SpriteBatch Drawing)
         {
-                Drawing.DrawString(
-                    Font,
-                    ValueToDraw /* + " X=" + ScreenPosition.X + " Y=" + ScreenPosition.Y */,
-                    ScreenPosition,
-                    Color,
-                    Rotation,
-                    screenCenter,
-                    ScaleToDraw * FontScale,
-                    SpriteEffects.None,
-                    Depth
-                    );
+            Drawing.DrawString(
+                Font,
+                ValueToDraw /* + " X=" + ScreenPosition.X + " Y=" + ScreenPosition.Y */,
+                ScreenPosition,
+                Color,
+                Rotation,
+                screenCenter,
+                ScaleToDraw * FontScale,
+                SpriteEffects.None,
+                Depth
+                );
         }
 
         public override void DrawObject(SpriteBatch drawing)
