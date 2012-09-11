@@ -270,22 +270,6 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Show this sprite if it's hidden
-        /// </summary>
-        public void Show()
-        {
-            Visible = true;
-        }
-
-        /// <summary>
-        /// Hide this sprite if it's visible
-        /// </summary>
-        public void Hide()
-        {
-            Visible = false;
-        }
-
-        /// <summary>
         /// Override to Load this sprite. You should set a costume.
         /// </summary>
         public abstract void Load();
@@ -648,7 +632,6 @@ namespace ScratchyXna
             return Scene.ScheduleEvent(seconds, true, callback);
         }
 
-       /// <summary>
         /// <summary>
         /// Get or set the ghost effect. 0 = fully visible, 100 = fully invisible
         /// </summary>
@@ -666,18 +649,20 @@ namespace ScratchyXna
 
         /// <summary>
         /// Move this sprite on top of all other sprites
+        /// todo: take into account background layers (perhaps optionally)
         /// </summary>
         public void GoToFront()
         {
-            Layer = Scene.Sprites.OrderByDescending(s => s.Layer).First().Layer + 1;
+            Layer = Math.Max(Scene.Sprites.OrderByDescending(s => s.Layer).First().Layer + 1, 2f);
         }
 
         /// <summary>
         /// Move this sprite underneath all other sprites
+        /// todo: take into account background layers (perhaps optionally)
         /// </summary>
         public void GoToBack()
         {
-            Layer = Scene.Sprites.OrderBy(s => s.Layer).First().Layer - 1;
+            Layer = Math.Max(Scene.Sprites.OrderBy(s => s.Layer).First().Layer - 1, 2f);
         }
 
         /// <summary>

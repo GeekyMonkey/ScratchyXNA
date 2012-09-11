@@ -57,6 +57,8 @@
     <Compile Include="Enumerations\StampMethods.cs" />
     <Compile Include="Enumerations\StampCroppings.cs" />
     <Compile Include="Input\TouchInput.cs" />
+    <Compile Include="Scenes\Background.cs" />
+    <Compile Include="Scenes\BackgroundLayer.cs" />
     <Compile Include="Sprites\Costume.cs" />
     <Compile Include="Enumerations\EnumerationExtensions.cs" />
     <Compile Include="ScratchyXnaGame.cs" />

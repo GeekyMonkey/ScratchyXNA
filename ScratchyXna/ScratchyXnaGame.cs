@@ -168,6 +168,20 @@ namespace ScratchyXna
 
 
         /// <summary>
+        /// Add a background layer to the game
+        /// </summary>
+        /// <param name="scene">Scene that owns it</param>
+        /// <param name="CostumeName">Name of the costume</param>
+        /// <returns>The costume object</returns>
+        internal BackgroundLayer LoadBackgroundLayer(Scene scene, Background background, string BackgroundLayerName)
+        {
+            BackgroundLayer backgroundLayer = new BackgroundLayer(background);
+            backgroundLayer.Load(scene, Content, BackgroundLayerName);
+            return backgroundLayer;
+        }
+
+
+        /// <summary>
         /// Add a font to the game
         /// </summary>
         /// <param name="fontName">Name of the font resource</param>

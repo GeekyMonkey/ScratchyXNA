@@ -28,7 +28,7 @@ namespace ScratchyXna
                 layer = value;
             }
         }
-        internal float layer = 1.0f;
+        internal float layer = 2.0f;
 
         public abstract void DrawObject(SpriteBatch Drawing);
 
@@ -184,6 +184,21 @@ namespace ScratchyXna
         /// </summary>
         public bool Visible = true;
 
+        /// <summary>
+        /// Show this if it's hidden
+        /// </summary>
+        public void Show()
+        {
+            Visible = true;
+        }
+
+        /// <summary>
+        /// Hide this if it's visible
+        /// </summary>
+        public void Hide()
+        {
+            Visible = false;
+        }
 
         private Vector2 velocity = Vector2.Zero;
         private float direction = 0.0f;

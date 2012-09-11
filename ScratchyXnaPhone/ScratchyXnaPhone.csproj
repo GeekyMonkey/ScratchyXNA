@@ -95,6 +95,12 @@
     <Compile Include="..\ScratchyXna\Input\TouchInput.cs">
       <Link>Input\TouchInput.cs</Link>
     </Compile>
+    <Compile Include="..\ScratchyXna\Scenes\Background.cs">
+      <Link>Scenes\Background.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Scenes\BackgroundLayer.cs">
+      <Link>Scenes\BackgroundLayer.cs</Link>
+    </Compile>
     <Compile Include="..\ScratchyXna\Scenes\Scene.cs">
       <Link>Scenes\Scene.cs</Link>
     </Compile>

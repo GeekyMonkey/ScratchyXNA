@@ -33,6 +33,32 @@ namespace ScratchyXna
         public List<Sprite> Sprites = new List<Sprite>();
 
         /// <summary>
+        /// Backgrounds managed by the scene
+        /// </summary>
+        public List<Background> Backgrounds = new List<Background>();
+
+        /// <summary>
+        /// The one auto-generated background for the scene
+        /// </summary>
+        public Background Background
+        {
+            get
+            {
+                if (!Backgrounds.Any())
+                {
+                    Background background = new Background(this);
+                    Backgrounds.Add(background);
+                }
+                return Backgrounds[0];
+            }
+            set
+            {
+                Backgrounds.Clear();
+                Backgrounds.Add(value);
+            }
+        }
+
+        /// <summary>
         /// ScheduledEvents managed by this scene
         /// </summary>
         public List<ScheduledEvent> ScheduledEvents = new List<ScheduledEvent>();
@@ -276,6 +302,10 @@ namespace ScratchyXna
         public void UpdateScene(GameTime gameTime)
         {
             Update(gameTime);
+            foreach (Background background in Backgrounds)
+            {
+                background.UpdateBackground(gameTime);
+            }
             foreach (Sprite sprite in Sprites)
             {
                 sprite.UpdateSprite(gameTime);
@@ -354,6 +384,7 @@ namespace ScratchyXna
 
             // Draw sprites and texts using layering
             List<IDrawable> drawables = new List<IDrawable>();
+            Backgrounds.ForEach(b => b.Layers.ForEach(bl => drawables.Add(bl)));
             Sprites.ForEach(s => drawables.Add(s));
             Texts.ForEach(t => drawables.Add(t));
             foreach (IDrawable drawable in drawables.OrderBy(s => s.Layer))
@@ -589,13 +620,23 @@ namespace ScratchyXna
         /// <summary>
         /// Add a sprite to the screen which will be automatically drawn and updated
         /// </summary>
-        /// <typeparam name="T">Type of sprite</typeparam>
         /// <returns>The sprite which was added</returns>
         public Sprite AddSprite(Sprite sprite)
         {
             Sprites.Add(sprite);
             sprite.Init(this);
             return sprite;
+        }
+
+        /// <summary>
+        /// Add a background to the screen which will be automatically drawn and updated
+        /// </summary>
+        /// <returns>The background which was added</returns>
+        public Background AddBackground(Background background)
+        {
+            Backgrounds.Add(background);
+            background.Init(this);
+            return background;
         }
     }
 }
