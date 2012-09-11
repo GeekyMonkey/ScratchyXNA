@@ -108,6 +108,16 @@ namespace ScratchyXna
         }
 
         /// <summary>
+        /// Add a background layer at depth 1
+        /// </summary>
+        /// <param name="backgroundImageName">The image resource name (in the Backgrounds folder)</param>
+        /// <returns>New background layer</returns>
+        public BackgroundLayer AddLayer(string backgroundImageName)
+        {
+            return AddLayer(backgroundImageName, 1);
+        }
+
+        /// <summary>
         /// Add a background layer
         /// </summary>
         /// <param name="backgroundImageName">The image resource name (in the Backgrounds folder)</param>
