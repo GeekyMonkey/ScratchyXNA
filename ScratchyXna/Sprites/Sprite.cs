@@ -18,11 +18,6 @@ namespace ScratchyXna
         public ContentManager Content;
 
         /// <summary>
-        /// Scale (1.0 is normal)
-        /// </summary>
-        public float Scale = 1.0f;
-
-        /// <summary>
         /// The color for this sprite.  White = no change.
         /// </summary>
         public Color SpriteColor = Color.White;

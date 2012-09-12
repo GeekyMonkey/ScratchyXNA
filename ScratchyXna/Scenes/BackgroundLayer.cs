@@ -154,6 +154,38 @@ namespace ScratchyXna
         }
 
 
+        /// <summary>
+        /// Scale the background to fit the height of one of the background layers
+        /// </summary>
+        public float ScaleToScreenHeight()
+        {
+            Scale = 200f / Height;
+            return Scale;
+        }
+
+        /// <summary>
+        /// Scale the background to fit the width of one of the background layers
+        /// </summary>
+        public float ScaleToScreenWidth()
+        {
+            Scale = (this.background.scene.MaxX - this.background.scene.MinX) / Width;
+            return Scale;
+        }
+
+        /// <summary>
+        /// Scale so that we completely fill the screen
+        /// </summary>
+        public float ScaleToScreen()
+        {
+            ScaleToScreenHeight();
+            float heightScale = Scale;
+            ScaleToScreenWidth();
+            float widthScale = Scale;
+            float newScale = (widthScale < heightScale) ? heightScale : widthScale;
+            Scale = newScale;
+            return Scale;
+        }
+
         private float Alpha = 1.0f;
 
         /// <summary>
@@ -202,7 +234,7 @@ namespace ScratchyXna
                     LayerColor * Alpha,
                     rotationRadians,
                     this.Center,
-                    this.background.Scale / Scene.PixelScale,
+                    this.Scale / Scene.PixelScale,
                     SpriteEffects.None,
                     Depth);
             }

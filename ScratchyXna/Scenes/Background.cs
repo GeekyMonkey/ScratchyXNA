@@ -14,8 +14,7 @@ namespace ScratchyXna
         /// Background Layers
         /// </summary>
         public List<BackgroundLayer> Layers = new List<BackgroundLayer>();
-        private Scene scene;
-        private float scale = 1.0f;
+        internal Scene scene;
 
         /// <summary>
         /// Constructor
@@ -31,34 +30,23 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Scale of the background
-        /// </summary>
-        public float Scale
-        {
-            get
-            {
-                return scale;
-            }
-            set
-            {
-                scale = value;
-            }
-        }
-
-        /// <summary>
         /// Scale the background to fit the height of one of the background layers
         /// </summary>
+        /// <param name="layer">1 based layer index</param>
         public void ScaleToScreenHeight(int layer)
         {
-            this.Scale = 200f / Layers[layer - 1].Height;
+            float newScale = GetLayer(layer).ScaleToScreenHeight();
+            Layers.ForEach(l => l.Scale = newScale);
         }
 
         /// <summary>
         /// Scale the background to fit the width of one of the background layers
         /// </summary>
+        /// <param name="layer">1 based layer index</param>
         public void ScaleToScreenWidth(int layer)
         {
-            this.Scale = (this.scene.MaxX - this.scene.MinX) / Layers[layer - 1].Width;
+            float newScale = GetLayer(layer).ScaleToScreenWidth();
+            Layers.ForEach(l => l.Scale = newScale);
         }
 
         /// <summary>                 
@@ -72,16 +60,14 @@ namespace ScratchyXna
         /// <summary>
         /// Scale so that we completely fill the screen
         /// </summary>
+        /// <param name="layer">1 based layer index</param>
         public void ScaleToScreen(int layer)
         {
-            ScaleToScreenHeight(layer);
-            float heightScale = Scale;
-            ScaleToScreenWidth(layer);
-            float widthScale = Scale;
-            if (widthScale < heightScale)
-            {
-                Scale = heightScale;
-            }
+            BackgroundLayer backgroundLayer = GetLayer(layer);
+            float heightScale = backgroundLayer.ScaleToScreenHeight();
+            float widthScale = backgroundLayer.ScaleToScreenWidth();
+            float scale = (widthScale < heightScale) ? heightScale : widthScale;
+            Layers.ForEach(l => l.Scale = scale);
         }
 
         /// <summary>
@@ -115,6 +101,16 @@ namespace ScratchyXna
         public BackgroundLayer AddLayer(string backgroundImageName)
         {
             return AddLayer(backgroundImageName, 1);
+        }
+
+        /// <summary>
+        /// Return a layer by index.  1 is the first one added. These are the 1-2-3 indexes, not the layer depth.
+        /// </summary>
+        /// <param name="layerIndex"></param>
+        /// <returns></returns>
+        public BackgroundLayer GetLayer(int layerIndex)
+        {
+            return Layers[layerIndex - 1];
         }
 
         /// <summary>

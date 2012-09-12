@@ -86,7 +86,6 @@ namespace ScratchyXna
         private string ValueToDraw = "";
         private TimeSpan AnimationElapsed = TimeSpan.MinValue;
         private double AnimationStartTotalSeconds = 0.0;
-        private float scale = 1.0f;
         private float FontScale;
         private bool Dirty = true;
         private Vector2 ScreenPosition;
@@ -123,7 +122,7 @@ namespace ScratchyXna
         /// <summary>
         /// Scale of the text.  Scale 1.0 = 20 lines of text vertically
         /// </summary>
-        public float Scale
+        public override float Scale
         {
             get
             {

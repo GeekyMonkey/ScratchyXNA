@@ -14,6 +14,23 @@ namespace ScratchyXna
     /// </summary>
     public abstract class GraphicObject : ScratchyObject, IDrawable
     {
+        protected float scale = 1.0f;
+
+        /// <summary>
+        /// Scale multiplier
+        /// </summary>
+        public virtual float Scale
+        {
+            get
+            {
+                return scale;
+            }
+            set
+            {
+                scale = value;
+            }
+        }
+
         /// <summary>
         /// Specifies the order that the sprites are drawn. Default is 1. Layer 1 is in the back, and larger numbers are drawn on top of this.
         /// </summary>

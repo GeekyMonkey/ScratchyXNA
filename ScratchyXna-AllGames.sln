@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Choplifter", "..\Choplifter
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChoplifterContent", "..\Choplifter\ChoplifterContent\ChoplifterContent.contentproj", "{94525608-8959-46F0-90A5-B6494137F905}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScratchyMoleContent", "..\ScratchyMole\ScratchyMoleContent\ScratchyMoleContent.contentproj", "{716B121C-E308-461E-AD21-9FC6462CAFA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -140,6 +142,14 @@ Global
 		{94525608-8959-46F0-90A5-B6494137F905}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{94525608-8959-46F0-90A5-B6494137F905}.Release|Windows Phone.ActiveCfg = Release|x86
 		{94525608-8959-46F0-90A5-B6494137F905}.Release|x86.ActiveCfg = Release|x86
+		{716B121C-E308-461E-AD21-9FC6462CAFA4}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{716B121C-E308-461E-AD21-9FC6462CAFA4}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{716B121C-E308-461E-AD21-9FC6462CAFA4}.Debug|Windows Phone.ActiveCfg = Debug|x86
+		{716B121C-E308-461E-AD21-9FC6462CAFA4}.Debug|x86.ActiveCfg = Debug|x86
+		{716B121C-E308-461E-AD21-9FC6462CAFA4}.Release|Any CPU.ActiveCfg = Release|x86
+		{716B121C-E308-461E-AD21-9FC6462CAFA4}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{716B121C-E308-461E-AD21-9FC6462CAFA4}.Release|Windows Phone.ActiveCfg = Release|x86
+		{716B121C-E308-461E-AD21-9FC6462CAFA4}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
