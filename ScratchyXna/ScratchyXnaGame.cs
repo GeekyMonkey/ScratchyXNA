@@ -31,6 +31,7 @@ namespace ScratchyXna
         public TouchInput TouchInput = new TouchInput();
         public float SpeedMultiplier = 100f;
         public Dictionary<string, Scene> Scenes = new Dictionary<string, Scene>();
+        public Dictionary<string, Song> Songs = new Dictionary<string, Song>();
         public Dictionary<string, SoundEffect> Sounds = new Dictionary<string, SoundEffect>();
         public Dictionary<string, SoundEffectInstance> SoundInstances = new Dictionary<string, SoundEffectInstance>();
         public Dictionary<string, SpriteFont> Fonts = new Dictionary<string, SpriteFont>();
@@ -198,6 +199,24 @@ namespace ScratchyXna
         }
 
         /// <summary>
+        /// Add a song to the game
+        /// </summary>
+        /// <param name="soundName">Name of the song resource</param>
+        /// <returns>The song object</returns>
+        public Song LoadSong(string songName)
+        {
+            songName = songName.ToLower();
+            if (Songs.ContainsKey(songName))
+            {
+                return Songs[songName];
+            }
+            Song song = Content.Load<Song>("Songs/" + songName);
+            Songs[songName] = song;
+            return song;
+            MediaPlayer.Play(song);
+        }
+
+        /// <summary>
         /// Add a sound to the game
         /// </summary>
         /// <param name="soundName">Name of the sound resource</param>
@@ -212,6 +231,42 @@ namespace ScratchyXna
             SoundEffect sound = Content.Load<SoundEffect>("Sounds/" + soundName);
             Sounds[soundName] = sound;
             return sound;
+        }
+
+        /// <summary>
+        /// Play a song
+        /// </summary>
+        /// <param name="songNmae">Song to play</param>
+        /// <param name="repeat">Repeat when done</param>
+        public void PlaySong(string songName, bool repeat)
+        {
+            songName = songName.ToLower();
+            PlaySong(this.Songs.FirstOrDefault(s => s.Key == songName).Value, repeat);
+        }
+
+        /// <summary>
+        /// Play a song
+        /// </summary>
+        /// <param name="song">Song to play</param>
+        /// <param name="repeat">Repeat when done</param>
+        public void PlaySong(Song song, bool repeat)
+        {
+            if (MediaPlayer.GameHasControl)
+            {
+                MediaPlayer.IsRepeating = repeat;
+                MediaPlayer.Play(song);
+            }
+        }
+
+        /// <summary>
+        /// Stop playing the song
+        /// </summary>
+        public void StopSong()
+        {
+            if (MediaPlayer.GameHasControl)
+            {
+                MediaPlayer.Stop();
+            }
         }
 
         /// <summary>

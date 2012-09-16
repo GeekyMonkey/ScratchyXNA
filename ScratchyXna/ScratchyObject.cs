@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Media;
 
 namespace ScratchyXna
 {
@@ -83,6 +84,43 @@ namespace ScratchyXna
         public void AddSound(string soundName)
         {
             ScratchyXnaGame.ScratchyGame.LoadSound(soundName);
+        }
+
+        /// <summary>
+        /// Add a song to the sprite
+        /// </summary>
+        /// <param name="soundName">Add a sound to the sprite</param>
+        public void AddSong(string songName)
+        {
+            ScratchyXnaGame.ScratchyGame.LoadSong(songName);
+        }
+
+        /// <summary>
+        /// Play a song
+        /// </summary>
+        /// <param name="songName">Song to play</param>
+        /// <param name="repeat">Repeat when done</param>
+        public void PlaySong(string songName, bool repeat)
+        {
+            ScratchyXnaGame.ScratchyGame.PlaySong(songName, repeat);
+        }
+
+        /// <summary>
+        /// Play a song
+        /// </summary>
+        /// <param name="song">Song to play</param>
+        /// <param name="repeat">Repeat when done</param>
+        public void PlaySong(Song song, bool repeat)
+        {
+            ScratchyXnaGame.ScratchyGame.PlaySong(song, repeat);
+        }
+
+        /// <summary>
+        /// Stop playing the song
+        /// </summary>
+        public void StopSong()
+        {
+            ScratchyXnaGame.ScratchyGame.StopSong();
         }
 
         /// <summary>
