@@ -301,6 +301,12 @@ namespace ScratchyXna
         /// <param name="gameTime">Time since the last update</param>
         public void UpdateScene(GameTime gameTime)
         {
+            foreach (Sprite sprite in spritesToRemove)
+            {
+                this.Sprites.Remove(sprite);
+            }
+            spritesToRemove.Clear();
+
             Update(gameTime);
             foreach (Background background in Backgrounds)
             {
@@ -627,6 +633,18 @@ namespace ScratchyXna
             sprite.Init(this);
             return sprite;
         }
+
+
+        /// <summary>
+        /// Remove a sprite from the scene
+        /// </summary>
+        /// <param name="sprite">The sprite to remove</param>
+        public void Remove(Sprite sprite)
+        {
+            spritesToRemove.Add(sprite);
+        }
+        private List<Sprite> spritesToRemove = new List<Sprite>();
+
 
         /// <summary>
         /// Add a background to the screen which will be automatically drawn and updated
