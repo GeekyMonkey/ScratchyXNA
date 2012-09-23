@@ -301,6 +301,12 @@ namespace ScratchyXna
         /// <param name="gameTime">Time since the last update</param>
         public void UpdateScene(GameTime gameTime)
         {
+            foreach (Sprite sprite in spritesToAdd)
+            {
+                Sprites.Add(sprite);
+            }
+            spritesToAdd.Clear();
+
             foreach (Sprite sprite in spritesToRemove)
             {
                 this.Sprites.Remove(sprite);
@@ -629,8 +635,8 @@ namespace ScratchyXna
         /// <returns>The sprite which was added</returns>
         public Sprite AddSprite(Sprite sprite)
         {
-            Sprites.Add(sprite);
             sprite.Init(this);
+            spritesToAdd.Add(sprite);
             return sprite;
         }
 
@@ -644,6 +650,7 @@ namespace ScratchyXna
             spritesToRemove.Add(sprite);
         }
         private List<Sprite> spritesToRemove = new List<Sprite>();
+        private List<Sprite> spritesToAdd = new List<Sprite>();
 
 
         /// <summary>
