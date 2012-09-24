@@ -187,17 +187,6 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Load a costume for sprites to use (if not already loaded)
-        /// </summary>
-        /// <param name="CostumeName">Name of the costume resource</param>
-        /// <returns>A Costume object</returns>
-        public Costume LoadCostume(string CostumeName)
-        {
-            return Game.LoadCostume(this, CostumeName);
-        }
-
-
-        /// <summary>
         /// Show this game scene
         /// </summary>
         public void ShowScene()
