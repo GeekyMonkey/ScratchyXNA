@@ -18,7 +18,32 @@ namespace ScratchyXna
         private HorizontalAlignments xCenter = HorizontalAlignments.Center;
         private VerticalAlignments yCenter = VerticalAlignments.Center;
         private Scene scene;
-        private Texture2D texture;
+        private List<Texture2D> textures = new List<Texture2D>();
+
+        /// <summary>
+        /// The current frame index
+        /// </summary>
+        private int frame = 1;
+
+        /// <summary>
+        /// The current frame index
+        /// </summary>
+        public int Frame
+        {
+            get
+            {
+                return frame;
+            }
+            set
+            {
+                frame = value;
+            }
+        }
+
+        /// <summary>
+        /// Animation speed multiplier (1.0 is normal, 2.0 is twice as fast)
+        /// </summary>
+        public float AnimationSpeed = 1.0f;
 
         /// <summary>
         /// Name of the costume
@@ -36,13 +61,30 @@ namespace ScratchyXna
         {
             get
             {
-                return texture;
+                return textures[Frame-1];
             }
             set
             {
-                texture = value;
-                pixels = null;
+                while (textures.Count() < Frame)
+                {
+                    textures.Add(null);
+                }
+                while (pixels.Count() < Frame)
+                {
+                    pixels.Add(null);
+                }
+                textures[Frame-1] = value;
+                pixels[Frame-1] = null;
                 CalculateCenter();
+            }
+        }
+
+        public void NextFrame()
+        {
+            Frame++;
+            if (Frame > textures.Count())
+            {
+                Frame = 1;
             }
         }
 
@@ -76,10 +118,7 @@ namespace ScratchyXna
         /// <param name="name">Name of the content</param>
         public void Load(Scene scene, ContentManager content, string name)
         {
-            this.scene = scene;
-            Name = name;
-            Texture = content.Load<Texture2D>("Costumes/" + name);
-            CalculateCenter();
+            Load(scene, content, name, 1, 1);
         }
 
         /// <summary>
@@ -92,8 +131,78 @@ namespace ScratchyXna
         {
             this.scene = scene;
             Name = name;
-            Texture = content.Load<Texture2D>("Costumes/" + name);
+            Frame = 1;
+            Texture2D newTexture = content.Load<Texture2D>("Costumes/" + name);
+            if (frameColumns != 1 || frameRows != 1)
+            {
+                SplitAndAddTextures(newTexture, frameColumns, frameRows);
+            }
+            else
+            {
+                Texture = newTexture;
+            }
+
             CalculateCenter();
+        }
+
+        /// <summary>
+        /// Splits a texture into an array of smaller textures of the specified size.
+        /// </summary>
+        /// <param name="original">The texture to be split into smaller textures</param>
+        private int SplitAndAddTextures(Texture2D original, int xCount, int yCount)
+        {
+            int frameCount = 0;
+            int partHeight = original.Height / yCount;
+            int partWidth = original.Width / xCount;
+            int dataPerPart = partWidth * partHeight;//Number of pixels in each of the split parts
+
+            if (original.Width % xCount != 0)
+            {
+                throw new Exception("Costume " + Name + " width of " + original.Width + " does not divide evenly by " + xCount);
+            }
+            if (original.Height % yCount != 0)
+            {
+                throw new Exception("Costume " + Name + " height of " + original.Height + " does not divide evenly by " + yCount);
+            }
+
+            //Get the pixel data from the original texture:
+            Color[] originalData = new Color[original.Width * original.Height];
+            original.GetData<Color>(originalData);
+
+            for (int y = 0; y < yCount * partHeight; y += partHeight)
+            {
+                for (int x = 0; x < xCount * partWidth; x += partWidth)
+                {
+                    //The texture at coordinate {x, y} from the top-left of the original texture
+                    Texture2D part = new Texture2D(original.GraphicsDevice, partWidth, partHeight);
+                    //The data for part
+                    Color[] partData = new Color[dataPerPart];
+
+                    //Fill the part data with colors from the original texture
+                    for (int py = 0; py < partHeight; py++)
+                        for (int px = 0; px < partWidth; px++)
+                        {
+                            int partIndex = px + py * partWidth;
+                            //If a part goes outside of the source texture, then fill the overlapping part with Color.Transparent
+                            if (y + py >= original.Height || x + px >= original.Width)
+                            {
+                                partData[partIndex] = Color.Transparent;
+                            }
+                            else
+                            {
+                                partData[partIndex] = originalData[(x + px) + (y + py) * original.Width];
+                            }
+                        }
+
+                    //Fill the part with the extracted data
+                    part.SetData<Color>(partData);
+                    //Stick the part in the return array:                    
+                    textures.Add(part);
+                    pixels.Add(partData);
+                    frameCount++;
+                }
+            }
+            return frameCount;
         }
 
         /// <summary>
@@ -166,20 +275,23 @@ namespace ScratchyXna
         {
             get
             {
-                if (pixels == null && Texture != null)
+                if (pixels[frame-1] == null && Texture != null)
                 {
-                    pixels = new Color[Texture.Width * Texture.Height];
-                    Texture.GetData(pixels);
+                    pixels[Frame-1] = new Color[Width * Height];
+                    Texture.GetData(pixels[Frame-1]);
                 }
-                return pixels;
+                return pixels[Frame-1];
             }
             set
             {
-                pixels = value;
-                Texture.SetData(pixels);
+                pixels[Frame-1] = value;
+                if (value != null)
+                {
+                    Texture.SetData(value);
+                }
             }
         }
-        private Color[] pixels;
+        private List<Color[]> pixels = new List<Color[]>();
 
         /// <summary>
         /// Begin creating a custom costume by copying the current costume
