@@ -71,10 +71,24 @@ namespace ScratchyXna
         /// <summary>
         /// Adding a costume to the game
         /// </summary>
+        /// <param name="scene">Scene that owns the sprite</param>
+        /// <param name="content">The content manager</param>
+        /// <param name="name">Name of the content</param>
+        public void Load(Scene scene, ContentManager content, string name)
+        {
+            this.scene = scene;
+            Name = name;
+            Texture = content.Load<Texture2D>("Costumes/" + name);
+            CalculateCenter();
+        }
+
+        /// <summary>
+        /// Adding a costume to the game
+        /// </summary>
         /// <param name="scene"></param>
         /// <param name="content"></param>
         /// <param name="name"></param>
-        public void Load(Scene scene, ContentManager content, string name)
+        public void Load(Scene scene, ContentManager content, string name, int frameColumns, int frameRows)
         {
             this.scene = scene;
             Name = name;
@@ -193,6 +207,50 @@ namespace ScratchyXna
 
             newCostume.CalculateCenter();
             return newCostume;
+        }
+
+        /// <summary>
+        /// Flip this costume horizontally
+        /// </summary>
+        public Costume FlipX()
+        {
+            Flip(true, false);
+            return this;
+        }
+
+        /// <summary>
+        /// Flip this cosume vertically
+        /// </summary>
+        public Costume FlipY()
+        {
+            Flip(false, true);
+            return this;
+        }
+
+        /// <summary>
+        /// Common flip functioniality
+        /// </summary>
+        /// <param name="horizontal">Flipping horizontally</param>
+        /// <param name="vertical">Flipping vertically</param>
+        private void Flip(bool horizontal, bool vertical)
+        {
+            Texture2D source = this.Texture;
+            Texture2D flipped = new Texture2D(source.GraphicsDevice, source.Width, source.Height);
+            Color[] data = new Color[source.Width * source.Height];
+            Color[] flippedData = new Color[data.Length];
+
+            source.GetData(data);
+
+            for (int x = 0; x < source.Width; x++)
+                for (int y = 0; y < source.Height; y++)
+                {
+                    int idx = (horizontal ? source.Width - 1 - x : x) + ((vertical ? source.Height - 1 - y : y) * source.Width);
+                    flippedData[x + y * source.Width] = data[idx];
+                }
+
+            flipped.SetData(flippedData);
+            this.Texture = flipped;
+            this.Pixels = flippedData;
         }
 
     }

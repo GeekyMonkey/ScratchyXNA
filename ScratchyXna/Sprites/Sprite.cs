@@ -33,8 +33,19 @@ namespace ScratchyXna
             }
         }
 
+        /// <summary>
+        /// The current costume
+        /// </summary>
         private Costume costume;
-        private List<Costume> SpriteCostumes = new List<Costume>();
+
+        /// <summary>
+        /// All of the costumes associated with this sprite
+        /// </summary>
+        private List<Costume> Costumes = new List<Costume>();
+
+        /// <summary>
+        /// Transparency 0 = fully invisible, 1 = fully visible
+        /// </summary>
         private float Alpha = 1.0f;
 
         /// <summary>
@@ -86,15 +97,49 @@ namespace ScratchyXna
         }
 
         /// <summary>
+        /// Get a costume by number
+        /// </summary>
+        /// <param name="number">1 based index</param>
+        /// <returns>The costume</returns>
+        public Costume GetCostume(int number)
+        {
+            return this.Costumes[number - 1];
+        }
+
+        /// <summary>
+        /// Get a costume by name
+        /// </summary>
+        /// <param name="name">costume name</param>
+        /// <returns>The costume</returns>
+        public Costume GetCostume(string name)
+        {
+            Costume costume = Costumes.FirstOrDefault(sc => sc.Name == name);
+            if (Costume == null)
+            {
+                throw new Exception("Costume " + name + " not found in this sprite.  Did you add it?");
+            }
+            return costume;
+        }
+
+        /// <summary>
+        /// Set the costume for this sprite
+        /// </summary>
+        /// <param name="costume">costume to switch to</param>
+        public void SetCostume(Costume costume)
+        {
+            this.Costume = costume;
+        }
+
+        /// <summary>
         /// Set the costume for this sprite
         /// </summary>
         /// <param name="name">Name of the costume</param>
         public Costume SetCostume(string name)
         {
-            Costume = SpriteCostumes.FirstOrDefault(sc => sc.Name == name);
+            Costume = Costumes.FirstOrDefault(sc => sc.Name == name);
             if (Costume == null)
             {
-                Costume = Game.LoadCostume(Scene, name);
+                Costume = AddCostume(name);
             }
             return Costume;
         }
@@ -105,7 +150,7 @@ namespace ScratchyXna
         /// <param name="number"></param>
         public void SetCostume(int number)
         {
-            Costume = SpriteCostumes[number - 1];
+            Costume = Costumes[number - 1];
         }
 
         /// <summary>
@@ -114,7 +159,7 @@ namespace ScratchyXna
         public void NextCostume()
         {
             int nextCostumeNumber = GetCostumeNumber() + 1;
-            if (nextCostumeNumber > SpriteCostumes.Count)
+            if (nextCostumeNumber > Costumes.Count)
             {
                 nextCostumeNumber = 1;
             }
@@ -129,7 +174,7 @@ namespace ScratchyXna
             int nextCostumeNumber = GetCostumeNumber() - 1;
             if (nextCostumeNumber < 1)
             {
-                nextCostumeNumber = SpriteCostumes.Count;
+                nextCostumeNumber = Costumes.Count;
             }
             SetCostume(nextCostumeNumber);
         }
@@ -143,7 +188,7 @@ namespace ScratchyXna
             int costumeIndex = 0;
             try
             {
-                costumeIndex = SpriteCostumes.IndexOf(Costume);
+                costumeIndex = Costumes.IndexOf(Costume);
             }
             catch { }
             costumeIndex++;
@@ -168,14 +213,39 @@ namespace ScratchyXna
         /// <summary>
         /// Get a costume ready to use
         /// </summary>
+        /// <param name="costume">Costume to add to this sprite</param>
+        public Costume AddCostume(Costume costume)
+        {
+            // Keep a local list of sprite specific costumes
+            Costumes.Add(costume);
+
+            if (Costume == null)
+            {
+                Costume = costume;
+            }
+            return costume;
+        }
+
+        /// <summary>
+        /// Get a costume ready to use
+        /// </summary>
         /// <param name="costumeName"></param>
         public Costume AddCostume(string costumeName)
         {
+            return AddCostume(costumeName, 1, 1);
+        }
+
+        /// <summary>
+        /// Get a costume ready to use
+        /// </summary>
+        /// <param name="costumeName"></param>
+        public Costume AddCostume(string costumeName, int frameColumns, int frameRows)
+        {
             // Use the shared content loader
-            Costume costume = Game.LoadCostume(Scene, costumeName);
+            Costume costume = Game.LoadCostume(Scene, costumeName, frameColumns, frameRows);
 
             // Keep a local list of sprite specific costumes
-            SpriteCostumes.Add(costume);
+            Costumes.Add(costume);
 
             if (Costume == null)
             {

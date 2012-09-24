@@ -153,20 +153,31 @@ namespace ScratchyXna
         /// Add a costume to the game
         /// </summary>
         /// <param name="scene">Scene that owns it</param>
-        /// <param name="CostumeName">Name of the costume</param>
+        /// <param name="costumeName">Name of the costume</param>
         /// <returns>The costume object</returns>
-        public Costume LoadCostume(Scene scene, string CostumeName)
+        public Costume LoadCostume(Scene scene, string costumeName)
         {
-            if (costumes.ContainsKey(CostumeName))
-            {
-                return costumes[CostumeName];
-            }
-            Costume costume = new Costume();
-            costume.Load(scene, Content, CostumeName);
-            costumes[CostumeName] = costume;
-            return costume;
+            return LoadCostume(scene, costumeName, 1, 1);
         }
 
+
+        /// <summary>
+        /// Add a costume to the game
+        /// </summary>
+        /// <param name="scene">Scene that owns it</param>
+        /// <param name="costumeName">Name of the costume</param>
+        /// <returns>The costume object</returns>
+        public Costume LoadCostume(Scene scene, string costumeName, int frameColumns, int frameRows)
+        {
+            if (costumes.ContainsKey(costumeName))
+            {
+                return costumes[costumeName];
+            }
+            Costume costume = new Costume();
+            costume.Load(scene, Content, costumeName, frameColumns, frameRows);
+            costumes[costumeName] = costume;
+            return costume;
+        }
 
         /// <summary>
         /// Add a background layer to the game
