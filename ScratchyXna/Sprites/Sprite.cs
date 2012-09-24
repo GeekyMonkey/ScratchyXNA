@@ -243,6 +243,8 @@ namespace ScratchyXna
         {
             // Use the shared content loader
             Costume costume = Game.LoadCostume(Scene, costumeName, frameColumns, frameRows);
+            costume.XCenter = this.xCenter;
+            costume.YCenter = this.yCenter;
 
             // Keep a local list of sprite specific costumes
             Costumes.Add(costume);
@@ -552,6 +554,46 @@ namespace ScratchyXna
                 otherSprite.Costume.Texture.Height,
                 otherSprite.Costume.Pixels);
         }
+
+        /// <summary>
+        /// Positioning X Center method
+        /// </summary>
+        public HorizontalAlignments XCenter
+        {
+            get
+            {
+                return xCenter;
+            }
+            set
+            {
+                xCenter = value;
+                foreach (Costume c in Costumes)
+                {
+                    c.XCenter = xCenter;
+                }
+            }
+        }
+        private HorizontalAlignments xCenter = HorizontalAlignments.Center;
+
+        /// <summary>
+        /// Positioning Y Center method
+        /// </summary>
+        public VerticalAlignments YCenter
+        {
+            get
+            {
+                return yCenter;
+            }
+            set
+            {
+                yCenter = value;
+                foreach (Costume c in Costumes)
+                {
+                    c.YCenter = yCenter;
+                }
+            }
+        }
+        private VerticalAlignments yCenter = VerticalAlignments.Center;
 
         /// <summary>
         /// Determines if there is overlap of the non-transparent pixels between two
