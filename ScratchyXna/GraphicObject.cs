@@ -424,6 +424,25 @@ namespace ScratchyXna
             }
         }
 
+        /// <summary>
+        /// Schedule an action to occur once in the future
+        /// </summary>
+        /// <param name="seconds">Seconds before the action</param>
+        /// <param name="callback">Action callback function</param>
+        public ScheduledEvent Wait(double seconds, Action callback)
+        {
+            return Scene.ScheduleEvent(this, seconds, false, callback);
+        }
+
+        /// <summary>
+        /// Schedule an action to occur in the future at set intervals
+        /// </summary>
+        /// <param name="seconds">Seconds between action</param>
+        /// <param name="callback">Action callback function</param>
+        public ScheduledEvent Forever(double seconds, Action callback)
+        {
+            return Scene.ScheduleEvent(this, seconds, true, callback);
+        }
 
     }
 }

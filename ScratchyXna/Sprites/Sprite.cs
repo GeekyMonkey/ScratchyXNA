@@ -608,26 +608,6 @@ namespace ScratchyXna
         }
 
         /// <summary>
-        /// Schedule an action to occur once in the future
-        /// </summary>
-        /// <param name="seconds">Seconds before the action</param>
-        /// <param name="callback">Action callback function</param>
-        public ScheduledEvent Wait(double seconds, Action callback)
-        {
-            return Scene.ScheduleEvent(seconds, false, callback);
-        }
-
-        /// <summary>
-        /// Schedule an action to occur in the future at set intervals
-        /// </summary>
-        /// <param name="seconds">Seconds between action</param>
-        /// <param name="callback">Action callback function</param>
-        public ScheduledEvent Forever(double seconds, Action callback)
-        {
-            return Scene.ScheduleEvent(seconds, true, callback);
-        }
-
-        /// <summary>
         /// Get or set the ghost effect. 0 = fully visible, 100 = fully invisible
         /// </summary>
         public float GhostEffect
