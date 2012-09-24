@@ -15,6 +15,7 @@ namespace ScratchyXna
         internal bool Repeat;
         internal TimeSpan? StartTime = null;
         internal TimeSpan TargetTime;
+        internal ScratchyObject Owner;
 
         /*
         /// <summary>
@@ -40,8 +41,9 @@ namespace ScratchyXna
         /// <param name="timeInterval">Time to start (time since game start)</param>
         /// <param name="callback">Action to fire</param>
         /// <param name="repeat">Repeat after firing the event</param>
-        public ScheduledEvent(TimeSpan startTime, double seconds, Action callback, bool repeat)
+        public ScheduledEvent(ScratchyObject owner, TimeSpan startTime, double seconds, Action callback, bool repeat)
         {
+            Owner = owner;
             StartTime = startTime;
             Time = TimeSpan.FromSeconds(seconds);
             TargetTime = startTime + Time;

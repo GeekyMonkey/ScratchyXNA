@@ -309,7 +309,8 @@ namespace ScratchyXna
 
             foreach (Sprite sprite in spritesToRemove)
             {
-                this.Sprites.Remove(sprite);
+                ScheduledEvents.RemoveAll(se => se.Owner == sprite);
+                Sprites.Remove(sprite);
             }
             spritesToRemove.Clear();
 
@@ -320,16 +321,22 @@ namespace ScratchyXna
             }
             foreach (Sprite sprite in Sprites)
             {
-                sprite.UpdateSprite(gameTime);
+                if (!sprite.Removed)
+                {
+                    sprite.UpdateSprite(gameTime);
+                }
             }
             foreach (Text text in Texts.ToArray())
             {
-                text.Update(gameTime);
+                if (!text.Removed)
+                {
+                    text.Update(gameTime);
+                }
             }
             TimeSpan totalGameTime = gameTime.TotalGameTime;
             foreach (ScheduledEvent scheduledEvent in ScheduledEvents)
             {
-                if (totalGameTime >= scheduledEvent.TargetTime)
+                if (totalGameTime >= scheduledEvent.TargetTime && scheduledEvent.Owner.Removed == false)
                 {
                     if (scheduledEvent.Repeat == false)
                     {
@@ -591,7 +598,7 @@ namespace ScratchyXna
         /// <param name="callback">Action callback function</param>
         public ScheduledEvent Wait(double seconds, Action callback)
         {
-            return ScheduleEvent(seconds, false, callback);
+            return ScheduleEvent(this, seconds, false, callback);
         }
 
         /// <summary>
@@ -601,7 +608,7 @@ namespace ScratchyXna
         /// <param name="callback">Action callback function</param>
         public ScheduledEvent Forever(double seconds, Action callback)
         {
-            return ScheduleEvent(seconds, true, callback);
+            return ScheduleEvent(this, seconds, true, callback);
         }
 
         /// <summary>
@@ -611,9 +618,9 @@ namespace ScratchyXna
         /// <param name="repeat">Should it repeat, or fire once</param>
         /// <param name="callback">Action callback</param>
         /// <returns>The created ScheduledEvent object</returns>
-        internal ScheduledEvent ScheduleEvent(double seconds, bool repeat, Action callback)
+        internal ScheduledEvent ScheduleEvent(ScratchyObject owner, double seconds, bool repeat, Action callback)
         {
-            ScheduledEvent scheduledEvent = new ScheduledEvent(Game.gameTime.TotalGameTime, seconds, callback, repeat);
+            ScheduledEvent scheduledEvent = new ScheduledEvent(owner, Game.gameTime.TotalGameTime, seconds, callback, repeat);
             ScheduledEvents.Add(scheduledEvent);
             return scheduledEvent;
         }
@@ -647,6 +654,8 @@ namespace ScratchyXna
         /// <param name="sprite">The sprite to remove</param>
         public void Remove(Sprite sprite)
         {
+            sprite.Hide();
+            sprite.Removed = true;
             spritesToRemove.Add(sprite);
         }
         private List<Sprite> spritesToRemove = new List<Sprite>();

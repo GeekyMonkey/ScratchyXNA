@@ -9,6 +9,11 @@ namespace ScratchyXna
     public abstract class ScratchyObject
     {
         /// <summary>
+        /// Has this object been removed from the scene
+        /// </summary>
+        internal bool Removed = false;
+
+        /// <summary>
         /// The Game's keyboard input
         /// </summary>
         public KeyboardInput Keyboard
