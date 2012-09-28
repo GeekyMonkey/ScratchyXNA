@@ -17,8 +17,12 @@ namespace ScratchyXna
 
         private HorizontalAlignments xCenter = HorizontalAlignments.Center;
         private VerticalAlignments yCenter = VerticalAlignments.Center;
-        private Scene scene;
         private List<Texture2D> textures = new List<Texture2D>();
+        private List<float> frameSecondsList = new List<float>();
+        private float frameSeconds = 1f;
+        private float elapsedFrameSeconds = 0;
+        bool animating = false;
+        private Sprite sprite;
 
         /// <summary>
         /// The current frame index
@@ -37,6 +41,36 @@ namespace ScratchyXna
             set
             {
                 frame = value;
+            }
+        }
+
+        /*
+        public Sprite Sprite
+        {
+            get
+            {
+                return sprite;
+            }
+            set
+            {
+                sprite = value;
+            }
+        }
+        */
+
+        /// <summary>
+        /// Number of seconds for all frames
+        /// </summary>
+        public float FrameSeconds
+        {
+            get
+            {
+                return frameSeconds;
+            }
+            set
+            {
+                frameSeconds = value;
+                frameSecondsList.ForEach(fs => fs = value);
             }
         }
 
@@ -72,6 +106,10 @@ namespace ScratchyXna
                 while (pixels.Count() < Frame)
                 {
                     pixels.Add(null);
+                }
+                while (frameSecondsList.Count() < Frame)
+                {
+                    frameSecondsList.Add(this.FrameSeconds);
                 }
                 textures[Frame-1] = value;
                 pixels[Frame-1] = null;
@@ -111,14 +149,66 @@ namespace ScratchyXna
         }
 
         /// <summary>
+        /// Add a frame to the costume by content name
+        /// </summary>
+        /// <param name="name">Conent name for the frame to add</param>
+        public Costume AddFrame(string name)
+        {
+            return AddFrame(name, this.frameSeconds);
+        }
+
+        /// <summary>
+        /// Add a frame to the costume by content name
+        /// </summary>
+        /// <param name="name">Conent name for the frame to add</param>
+        public Costume AddFrame(string name, float seconds)
+        {
+            Texture2D newTexture = ScratchyXnaGame.ScratchyGame.Content.Load<Texture2D>("Costumes/" + name);
+            return AddFrame(newTexture, seconds);
+        }
+
+        /// <summary>
+        /// Add a frame to the costume by copying a texture
+        /// </summary>
+        /// <param name="texture">texture to add</param>
+        public Costume AddFrame(Texture2D texture)
+        {
+            return AddFrame(texture, this.frameSeconds);
+        }
+
+        /// <summary>
+        /// Add a frame to the costume by copying a texture
+        /// </summary>
+        /// <param name="texture">texture to add</param>
+        public Costume AddFrame(Texture2D texture, float seconds)
+        {
+            textures.Add(texture);
+            Color[] newPixels = new Color[texture.Width * texture.Height];
+            texture.GetData(newPixels);
+            pixels.Add(newPixels);
+            frameSecondsList.Add(this.frameSeconds);
+            return this;
+        }
+
+        /// <summary>
+        /// Get a frame
+        /// </summary>
+        /// <param name="frameNumber">1 based frame index</param>
+        /// <returns>A texture</returns>
+        public Texture2D GetFrame(int frameNumber)
+        {
+            return textures[frameNumber - 1];
+        }
+
+        /// <summary>
         /// Adding a costume to the game
         /// </summary>
         /// <param name="scene">Scene that owns the sprite</param>
         /// <param name="content">The content manager</param>
         /// <param name="name">Name of the content</param>
-        public void Load(Scene scene, ContentManager content, string name)
+        public void Load(string name)
         {
-            Load(scene, content, name, 1, 1);
+            Load(name, 1, 1);
         }
 
         /// <summary>
@@ -127,12 +217,11 @@ namespace ScratchyXna
         /// <param name="scene"></param>
         /// <param name="content"></param>
         /// <param name="name"></param>
-        public void Load(Scene scene, ContentManager content, string name, int frameColumns, int frameRows)
+        public void Load(string name, int frameColumns, int frameRows)
         {
-            this.scene = scene;
             Name = name;
             Frame = 1;
-            Texture2D newTexture = content.Load<Texture2D>("Costumes/" + name);
+            Texture2D newTexture = ScratchyXnaGame.ScratchyGame.Content.Load<Texture2D>("Costumes/" + name);
             if (frameColumns != 1 || frameRows != 1)
             {
                 SplitAndAddTextures(newTexture, frameColumns, frameRows);
@@ -268,6 +357,36 @@ namespace ScratchyXna
             }
         }
 
+        internal void UpdateCostume(GameTime gameTime)
+        {
+            if (animating)
+            {
+                float elapsedSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                elapsedFrameSeconds += elapsedSeconds;
+                float currentFrameTime = frameSecondsList[Frame - 1] / AnimationSpeed;
+                while (elapsedFrameSeconds > currentFrameTime)
+                {
+                    elapsedFrameSeconds -= currentFrameTime;
+                    NextFrame();
+                    currentFrameTime = frameSecondsList[Frame - 1];
+                }
+            }
+        }
+
+        public Costume StartAnimation()
+        {
+            animating = true;
+            elapsedFrameSeconds = 0;
+            return this;
+        }
+
+        public Costume StopAnimation()
+        {
+            animating = false;
+            return this;
+        }
+
+
         /// <summary>
         /// The pixels in the current texture
         /// </summary>
@@ -311,7 +430,6 @@ namespace ScratchyXna
                 Name = name,
                 xCenter = this.xCenter,
                 yCenter = this.yCenter,
-                scene = this.scene
             };
 
             newCostume.Texture = new Texture2D(ScratchyXnaGame.ScratchyGame.GraphicsDevice, this.Width, this.Height);
@@ -346,23 +464,27 @@ namespace ScratchyXna
         /// <param name="vertical">Flipping vertically</param>
         private void Flip(bool horizontal, bool vertical)
         {
-            Texture2D source = this.Texture;
-            Texture2D flipped = new Texture2D(source.GraphicsDevice, source.Width, source.Height);
-            Color[] data = new Color[source.Width * source.Height];
-            Color[] flippedData = new Color[data.Length];
+            for (int i = 0; i < this.textures.Count(); i++)
+            {
+                Texture2D source = this.textures[i];
 
-            source.GetData(data);
+                Texture2D flipped = new Texture2D(source.GraphicsDevice, source.Width, source.Height);
+                Color[] data = new Color[source.Width * source.Height];
+                Color[] flippedData = new Color[data.Length];
 
-            for (int x = 0; x < source.Width; x++)
-                for (int y = 0; y < source.Height; y++)
-                {
-                    int idx = (horizontal ? source.Width - 1 - x : x) + ((vertical ? source.Height - 1 - y : y) * source.Width);
-                    flippedData[x + y * source.Width] = data[idx];
-                }
+                source.GetData(data);
 
-            flipped.SetData(flippedData);
-            this.Texture = flipped;
-            this.Pixels = flippedData;
+                for (int x = 0; x < source.Width; x++)
+                    for (int y = 0; y < source.Height; y++)
+                    {
+                        int idx = (horizontal ? source.Width - 1 - x : x) + ((vertical ? source.Height - 1 - y : y) * source.Width);
+                        flippedData[x + y * source.Width] = data[idx];
+                    }
+
+                flipped.SetData(flippedData);
+                this.textures[i] = flipped;
+                this.pixels[i] = flippedData;
+            }
         }
 
     }

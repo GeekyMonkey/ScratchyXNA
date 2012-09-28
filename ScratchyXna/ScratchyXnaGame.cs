@@ -155,9 +155,9 @@ namespace ScratchyXna
         /// <param name="scene">Scene that owns it</param>
         /// <param name="costumeName">Name of the costume</param>
         /// <returns>The costume object</returns>
-        public Costume LoadCostume(Scene scene, string costumeName)
+        public Costume LoadCostume(string costumeName)
         {
-            return LoadCostume(scene, costumeName, 1, 1);
+            return LoadCostume(costumeName, 1, 1);
         }
 
 
@@ -167,14 +167,14 @@ namespace ScratchyXna
         /// <param name="scene">Scene that owns it</param>
         /// <param name="costumeName">Name of the costume</param>
         /// <returns>The costume object</returns>
-        public Costume LoadCostume(Scene scene, string costumeName, int frameColumns, int frameRows)
+        public Costume LoadCostume(string costumeName, int frameColumns, int frameRows)
         {
             if (costumes.ContainsKey(costumeName))
             {
                 return costumes[costumeName];
             }
             Costume costume = new Costume();
-            costume.Load(scene, Content, costumeName, frameColumns, frameRows);
+            costume.Load(costumeName, frameColumns, frameRows);
             costumes[costumeName] = costume;
             return costume;
         }

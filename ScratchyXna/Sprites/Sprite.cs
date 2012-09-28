@@ -39,6 +39,11 @@ namespace ScratchyXna
         private Costume costume;
 
         /// <summary>
+        /// Current costume number
+        /// </summary>
+        private int? costumeNumber = 1;
+
+        /// <summary>
         /// All of the costumes associated with this sprite
         /// </summary>
         private List<Costume> Costumes = new List<Costume>();
@@ -47,6 +52,21 @@ namespace ScratchyXna
         /// Transparency 0 = fully invisible, 1 = fully visible
         /// </summary>
         private float Alpha = 1.0f;
+
+        /// <summary>
+        /// Animation speed multiplier (1.0 is normal, 2.0 is twice as fast)
+        /// </summary>
+        public float AnimationSpeed
+        {
+            get
+            {
+                return Costume.AnimationSpeed;
+            }
+            set
+            {
+                Costumes.ForEach(c => c.AnimationSpeed = value);
+            }
+        }
 
         /// <summary>
         /// Get or set the size of the sprite where 100% is the default size
@@ -127,7 +147,8 @@ namespace ScratchyXna
         /// <param name="costume">costume to switch to</param>
         public void SetCostume(Costume costume)
         {
-            this.Costume = costume;
+            this.costume = costume;
+            this.costumeNumber = null;
         }
 
         /// <summary>
@@ -137,9 +158,11 @@ namespace ScratchyXna
         public Costume SetCostume(string name)
         {
             Costume = Costumes.FirstOrDefault(sc => sc.Name == name);
+            costumeNumber = null;
             if (Costume == null)
             {
                 Costume = AddCostume(name);
+                costumeNumber = Costumes.Count();
             }
             return Costume;
         }
@@ -150,6 +173,7 @@ namespace ScratchyXna
         /// <param name="number"></param>
         public void SetCostume(int number)
         {
+            costumeNumber = number;
             Costume = Costumes[number - 1];
         }
 
@@ -185,14 +209,11 @@ namespace ScratchyXna
         /// <returns></returns>
         public int GetCostumeNumber()
         {
-            int costumeIndex = 0;
-            try
+            if (costumeNumber == null)
             {
-                costumeIndex = Costumes.IndexOf(Costume);
+                costumeNumber = Costumes.IndexOf(Costume) + 1;
             }
-            catch { }
-            costumeIndex++;
-            return costumeIndex;
+            return costumeNumber.Value;
         }
 
         /// <summary>
@@ -207,6 +228,7 @@ namespace ScratchyXna
             set
             {
                 costume = value;
+                costumeNumber = null;
             }
         }
 
@@ -242,7 +264,7 @@ namespace ScratchyXna
         public Costume AddCostume(string costumeName, int frameColumns, int frameRows)
         {
             // Use the shared content loader
-            Costume costume = Game.LoadCostume(Scene, costumeName, frameColumns, frameRows);
+            Costume costume = Game.LoadCostume(costumeName, frameColumns, frameRows);
             costume.XCenter = this.xCenter;
             costume.YCenter = this.yCenter;
 
@@ -359,8 +381,26 @@ namespace ScratchyXna
         public void UpdateSprite(GameTime gameTime)
         {
             Update(gameTime);
+            Costume.UpdateCostume(gameTime);
             UpdateGraphicObject(gameTime);
         }
+
+        /// <summary>
+        /// Number of seconds for all frames in all costumes
+        /// </summary>
+        public float FrameSeconds
+        {
+            get
+            {
+                return Costumes[0].FrameSeconds;
+            }
+            set
+            {
+                Costumes.ForEach(c => c.FrameSeconds = value);
+            }
+        }
+
+
 
         /// <summary>
         /// Move in the current direction by some distance
