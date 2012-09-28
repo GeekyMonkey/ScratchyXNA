@@ -70,7 +70,10 @@ namespace ScratchyXna
             set
             {
                 frameSeconds = value;
-                frameSecondsList.ForEach(fs => fs = value);
+                for (int i = 0; i < frameSecondsList.Count; i++)
+                {
+                    frameSecondsList[i] = value;
+                }
             }
         }
 
@@ -287,6 +290,7 @@ namespace ScratchyXna
                     part.SetData<Color>(partData);
                     //Stick the part in the return array:                    
                     textures.Add(part);
+                    frameSecondsList.Add(FrameSeconds);
                     pixels.Add(partData);
                     frameCount++;
                 }
