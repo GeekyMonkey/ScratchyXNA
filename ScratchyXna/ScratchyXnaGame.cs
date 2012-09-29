@@ -169,13 +169,14 @@ namespace ScratchyXna
         /// <returns>The costume object</returns>
         public Costume LoadCostume(string costumeName, int frameColumns, int frameRows)
         {
-            if (costumes.ContainsKey(costumeName))
-            {
-                return costumes[costumeName];
-            }
+            // this doesn't work if costumes are altered (add frames)
+            //if (costumes.ContainsKey(costumeName))
+            //{
+            //    return costumes[costumeName];
+            //}
             Costume costume = new Costume();
             costume.Load(costumeName, frameColumns, frameRows);
-            costumes[costumeName] = costume;
+            //costumes[costumeName] = costume;
             return costume;
         }
 

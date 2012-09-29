@@ -366,11 +366,21 @@ namespace ScratchyXna
                 float elapsedSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 elapsedFrameSeconds += elapsedSeconds;
                 float currentFrameTime = animation.Frames[CurrentFrameNumber - 1].Seconds / AnimationSpeed;
-                while (elapsedFrameSeconds > currentFrameTime)
+                bool lastFrame = false;
+                while (elapsedFrameSeconds > currentFrameTime && lastFrame == false)
                 {
                     elapsedFrameSeconds -= currentFrameTime;
                     NextFrame();
+                    lastFrame = (currentFrameNumber == animation.FrameCount);
                     currentFrameTime = animation.Frames[CurrentFrameNumber - 1].Seconds;
+                }
+                if (lastFrame)
+                {
+                    // Last frame
+                    if (animation.OnComplete != null)
+                    {
+                        animation.OnComplete();
+                    }
                 }
             }
         }
@@ -382,10 +392,11 @@ namespace ScratchyXna
         /// <returns>The generated animation object</returns>
         public Animation CreateAnimation(float frameSeconds)
         {
+            this.frameSeconds = frameSeconds;
             Animation animation = new Animation();
             for (int i = 0; i < this.FrameCount; i++)
             {
-                animation.AddFrame(i, frameSeconds);
+                animation.AddFrame(i+1, frameSeconds);
             }
             return animation;
         }
@@ -395,7 +406,14 @@ namespace ScratchyXna
         /// </summary>
         public Costume StartAnimation()
         {
-            return StartAnimation(FrameSeconds);
+            if (animation == null)
+            {
+                return StartAnimation(FrameSeconds);
+            }
+            else
+            {
+                return StartAnimation(animation);
+            }
         }
 
         /// <summary>
@@ -404,7 +422,16 @@ namespace ScratchyXna
         /// <param name="frameSeconds">How long to show each frame</param>
         public Costume StartAnimation(float frameSeconds)
         {
-            return StartAnimation(CreateAnimation(frameSeconds));
+            if (animation == null)
+            {
+                this.frameSeconds = frameSeconds;
+                return StartAnimation(CreateAnimation(frameSeconds));
+            }
+            else
+            {
+                FrameSeconds = frameSeconds;
+                return StartAnimation(animation);
+            }
         }
 
         public Costume StartAnimation(Animation animation)
@@ -419,6 +446,21 @@ namespace ScratchyXna
             this.animation = null;
         }
 
+        public Animation Animation
+        {
+            get
+            {
+                if (animation == null)
+                {
+                    animation = CreateAnimation(1.0f);
+                }
+                return animation;
+            }
+            set
+            {
+                StartAnimation(value);
+            }
+        }
 
         /// <summary>
         /// The pixels in the current texture
@@ -464,9 +506,21 @@ namespace ScratchyXna
                 xCenter = this.xCenter,
                 yCenter = this.yCenter,
             };
+            newCostume.frameSeconds = this.frameSeconds;
 
-            newCostume.Texture = new Texture2D(ScratchyXnaGame.ScratchyGame.GraphicsDevice, this.Width, this.Height);
-            newCostume.Pixels = this.Pixels;
+            newCostume.textures = new List<Texture2D>();
+            int prevCurrentFrameNumber = currentFrameNumber;
+            for (int i = 0 ; i < textures.Count() ; i++)
+            {
+                newCostume.pixels.Add(null);
+                CurrentFrameNumber = i + 1;
+                var newTexture = new Texture2D(ScratchyXnaGame.ScratchyGame.GraphicsDevice, this.Width, this.Height);
+                Color[] newPixels = new Color[this.Width * this.Height];
+                this.textures[i].GetData(newPixels);
+                newTexture.SetData(newPixels);
+                newCostume.textures.Add(newTexture);
+            }
+            currentFrameNumber = prevCurrentFrameNumber;
 
             newCostume.CalculateCenter();
             return newCostume;
