@@ -29,6 +29,8 @@ namespace ScratchyXna
         public KeyboardInput KeyboardInput = new KeyboardInput();
         public MouseInput MouseInput = new MouseInput();
         public TouchInput TouchInput = new TouchInput();
+        public AccelerometerInput AccelerometerInput = new AccelerometerInput();
+        public GyroscopeInput GyroscopeInput = new GyroscopeInput();
         public float SpeedMultiplier = 100f;
         public Dictionary<string, Scene> Scenes = new Dictionary<string, Scene>();
         public Dictionary<string, Song> Songs = new Dictionary<string, Song>();
@@ -95,6 +97,9 @@ namespace ScratchyXna
             TouchInput.Init();
             KeyboardInput.Init();
             MouseInput.Init();
+            AccelerometerInput.Init();
+            GyroscopeInput.Init();
+
             IsMouseVisible = true;
 
             base.Initialize();

@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChoplifterContent", "..\Cho
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScratchyMoleContent", "..\ScratchyMole\ScratchyMoleContent\ScratchyMoleContent.contentproj", "{716B121C-E308-461E-AD21-9FC6462CAFA4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Choplifter_Phone", "..\Choplifter\Choplifter\Choplifter_Phone.csproj", "{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -156,6 +158,22 @@ Global
 		{716B121C-E308-461E-AD21-9FC6462CAFA4}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{716B121C-E308-461E-AD21-9FC6462CAFA4}.Release|Windows Phone.ActiveCfg = Release|x86
 		{716B121C-E308-461E-AD21-9FC6462CAFA4}.Release|x86.ActiveCfg = Release|x86
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Debug|Any CPU.ActiveCfg = Debug|Windows Phone
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Debug|Mixed Platforms.ActiveCfg = Debug|Windows Phone
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Debug|Mixed Platforms.Build.0 = Debug|Windows Phone
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Debug|Mixed Platforms.Deploy.0 = Debug|Windows Phone
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Debug|x86.ActiveCfg = Debug|Windows Phone
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Release|Any CPU.ActiveCfg = Release|Windows Phone
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Release|Mixed Platforms.ActiveCfg = Release|Windows Phone
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Release|Mixed Platforms.Build.0 = Release|Windows Phone
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Release|Mixed Platforms.Deploy.0 = Release|Windows Phone
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{1D2C69C0-D069-4993-A3ED-7DB34BC3E93B}.Release|x86.ActiveCfg = Release|Windows Phone
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -46,6 +46,28 @@ namespace ScratchyXna
         }
 
         /// <summary>
+        /// The Game's Gyroscope input
+        /// </summary>
+        public GyroscopeInput Gyroscope
+        {
+            get
+            {
+                return ScratchyXnaGame.ScratchyGame.GyroscopeInput;
+            }
+        }
+
+        /// <summary>
+        /// The Game's accelerometer input
+        /// </summary>
+        public AccelerometerInput Accelerometer
+        {
+            get
+            {
+                return ScratchyXnaGame.ScratchyGame.AccelerometerInput;
+            }
+        }
+
+        /// <summary>
         /// Random number generator
         /// </summary>
         public Random Random
