@@ -516,7 +516,8 @@ namespace ScratchyXna
         /// <returns>True if touching</returns>
         public bool IsTouchingTop()
         {
-            return Rect.Top >= 100f;
+            // Y coordinates are reversed for sratch
+            return Rect.Bottom >= 100f;
         }
 
         /// <summary>
@@ -525,7 +526,8 @@ namespace ScratchyXna
         /// <returns>True if touching</returns>
         public bool IsTouchingBottom()
         {
-            return Rect.Bottom <= -100f;
+            // Y coordinates are reversed for sratch
+            return Rect.Top <= -100f;
         }
 
         /// <summary>

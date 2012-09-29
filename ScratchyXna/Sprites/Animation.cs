@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ScratchyXna
 {
-    public class Animation
+    public class Animation : ScratchyObject
     {
         public Action OnComplete;
         private int frameCount = 0;
