@@ -59,12 +59,14 @@
     <Compile Include="Input\TouchInput.cs" />
     <Compile Include="Scenes\Background.cs" />
     <Compile Include="Scenes\BackgroundLayer.cs" />
+    <Compile Include="Sprites\Animation.cs" />
     <Compile Include="Sprites\Costume.cs" />
     <Compile Include="Enumerations\EnumerationExtensions.cs" />
     <Compile Include="ScratchyXnaGame.cs" />
     <Compile Include="Enumerations\GamePlatforms.cs" />
     <Compile Include="Scenes\Scene.cs" />
     <Compile Include="Enumerations\GridStyles.cs" />
+    <Compile Include="Sprites\AnimationFrame.cs" />
     <Compile Include="Sprites\IDrawable.cs" />
     <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Input\KeyboardInput.cs" />

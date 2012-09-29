@@ -110,6 +110,12 @@
     <Compile Include="..\ScratchyXna\ScratchyXnaGame.cs">
       <Link>ScratchyXnaGame.cs</Link>
     </Compile>
+    <Compile Include="..\ScratchyXna\Sprites\Animation.cs">
+      <Link>Sprites\Animation.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Sprites\AnimationFrame.cs">
+      <Link>Sprites\AnimationFrame.cs</Link>
+    </Compile>
     <Compile Include="..\ScratchyXna\Sprites\Costume.cs">
       <Link>Sprites\Costume.cs</Link>
     </Compile>

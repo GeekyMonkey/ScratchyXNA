@@ -18,45 +18,30 @@ namespace ScratchyXna
         private HorizontalAlignments xCenter = HorizontalAlignments.Center;
         private VerticalAlignments yCenter = VerticalAlignments.Center;
         private List<Texture2D> textures = new List<Texture2D>();
-        private List<float> frameSecondsList = new List<float>();
         private float frameSeconds = 1f;
-        private float elapsedFrameSeconds = 0;
-        bool animating = false;
-        private Sprite sprite;
+        internal float elapsedFrameSeconds = 0;
+        Animation animation;
+        // private Sprite sprite;
 
         /// <summary>
         /// The current frame index
         /// </summary>
-        private int frame = 1;
+        private int currentFrameNumber = 1;
 
         /// <summary>
         /// The current frame index
         /// </summary>
-        public int Frame
+        public int CurrentFrameNumber
         {
             get
             {
-                return frame;
+                return currentFrameNumber;
             }
             set
             {
-                frame = value;
+                currentFrameNumber = value;
             }
         }
-
-        /*
-        public Sprite Sprite
-        {
-            get
-            {
-                return sprite;
-            }
-            set
-            {
-                sprite = value;
-            }
-        }
-        */
 
         /// <summary>
         /// Number of seconds for all frames
@@ -70,9 +55,9 @@ namespace ScratchyXna
             set
             {
                 frameSeconds = value;
-                for (int i = 0; i < frameSecondsList.Count; i++)
+                if (this.animation != null)
                 {
-                    frameSecondsList[i] = value;
+                    this.animation.Frames.ForEach(f => f.Seconds = value);
                 }
             }
         }
@@ -98,34 +83,49 @@ namespace ScratchyXna
         {
             get
             {
-                return textures[Frame-1];
+                return textures[CurrentFrameNumber-1];
             }
             set
             {
-                while (textures.Count() < Frame)
+                while (textures.Count() < CurrentFrameNumber)
                 {
                     textures.Add(null);
                 }
-                while (pixels.Count() < Frame)
+                while (pixels.Count() < CurrentFrameNumber)
                 {
                     pixels.Add(null);
                 }
-                while (frameSecondsList.Count() < Frame)
-                {
-                    frameSecondsList.Add(this.FrameSeconds);
-                }
-                textures[Frame-1] = value;
-                pixels[Frame-1] = null;
+                textures[CurrentFrameNumber-1] = value;
+                pixels[CurrentFrameNumber-1] = null;
                 CalculateCenter();
             }
         }
 
         public void NextFrame()
         {
-            Frame++;
-            if (Frame > textures.Count())
+            if (animation != null)
             {
-                Frame = 1;
+                CurrentFrameNumber++;
+                if (CurrentFrameNumber > animation.Frames.Count())
+                {
+                    CurrentFrameNumber = 1;
+                }
+            }
+            else
+            {
+                CurrentFrameNumber++;
+                if (CurrentFrameNumber > this.FrameCount)
+                {
+                    CurrentFrameNumber = 1;
+                }
+            }
+        }
+
+        public int FrameCount
+        {
+            get
+            {
+                return textures.Count();
             }
         }
 
@@ -189,7 +189,6 @@ namespace ScratchyXna
             Color[] newPixels = new Color[texture.Width * texture.Height];
             texture.GetData(newPixels);
             pixels.Add(newPixels);
-            frameSecondsList.Add(this.frameSeconds);
             return this;
         }
 
@@ -223,7 +222,7 @@ namespace ScratchyXna
         public void Load(string name, int frameColumns, int frameRows)
         {
             Name = name;
-            Frame = 1;
+            CurrentFrameNumber = 1;
             Texture2D newTexture = ScratchyXnaGame.ScratchyGame.Content.Load<Texture2D>("Costumes/" + name);
             if (frameColumns != 1 || frameRows != 1)
             {
@@ -290,7 +289,6 @@ namespace ScratchyXna
                     part.SetData<Color>(partData);
                     //Stick the part in the return array:                    
                     textures.Add(part);
-                    frameSecondsList.Add(FrameSeconds);
                     pixels.Add(partData);
                     frameCount++;
                 }
@@ -363,31 +361,62 @@ namespace ScratchyXna
 
         internal void UpdateCostume(GameTime gameTime)
         {
-            if (animating)
+            if (animation != null)
             {
                 float elapsedSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 elapsedFrameSeconds += elapsedSeconds;
-                float currentFrameTime = frameSecondsList[Frame - 1] / AnimationSpeed;
+                float currentFrameTime = animation.Frames[CurrentFrameNumber - 1].Seconds / AnimationSpeed;
                 while (elapsedFrameSeconds > currentFrameTime)
                 {
                     elapsedFrameSeconds -= currentFrameTime;
                     NextFrame();
-                    currentFrameTime = frameSecondsList[Frame - 1];
+                    currentFrameTime = animation.Frames[CurrentFrameNumber - 1].Seconds;
                 }
             }
         }
 
+        /// <summary>
+        /// Create an animation using all frames with the same time per frame
+        /// </summary>
+        /// <param name="frameSeconds">Seconds per frame</param>
+        /// <returns>The generated animation object</returns>
+        public Animation CreateAnimation(float frameSeconds)
+        {
+            Animation animation = new Animation();
+            for (int i = 0; i < this.FrameCount; i++)
+            {
+                animation.AddFrame(i, frameSeconds);
+            }
+            return animation;
+        }
+
+        /// <summary>
+        /// Start an animation of all frames in the current costume.
+        /// </summary>
         public Costume StartAnimation()
         {
-            animating = true;
+            return StartAnimation(FrameSeconds);
+        }
+
+        /// <summary>
+        /// Start an animation of all frames in the current costume.
+        /// </summary>
+        /// <param name="frameSeconds">How long to show each frame</param>
+        public Costume StartAnimation(float frameSeconds)
+        {
+            return StartAnimation(CreateAnimation(frameSeconds));
+        }
+
+        public Costume StartAnimation(Animation animation)
+        {
+            this.animation = animation;
             elapsedFrameSeconds = 0;
             return this;
         }
 
-        public Costume StopAnimation()
+        public void StopAnimation()
         {
-            animating = false;
-            return this;
+            this.animation = null;
         }
 
 
@@ -398,16 +427,16 @@ namespace ScratchyXna
         {
             get
             {
-                if (pixels[frame-1] == null && Texture != null)
+                if (pixels[currentFrameNumber-1] == null && Texture != null)
                 {
-                    pixels[Frame-1] = new Color[Width * Height];
-                    Texture.GetData(pixels[Frame-1]);
+                    pixels[CurrentFrameNumber-1] = new Color[Width * Height];
+                    Texture.GetData(pixels[CurrentFrameNumber-1]);
                 }
-                return pixels[Frame-1];
+                return pixels[CurrentFrameNumber-1];
             }
             set
             {
-                pixels[Frame-1] = value;
+                pixels[CurrentFrameNumber-1] = value;
                 if (value != null)
                 {
                     Texture.SetData(value);

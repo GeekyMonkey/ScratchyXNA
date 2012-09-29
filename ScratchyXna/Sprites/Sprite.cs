@@ -147,7 +147,7 @@ namespace ScratchyXna
         /// <param name="costume">costume to switch to</param>
         public void SetCostume(Costume costume)
         {
-            this.costume = costume;
+            this.Costume = costume;
             this.costumeNumber = null;
         }
 
@@ -229,6 +229,8 @@ namespace ScratchyXna
             {
                 costume = value;
                 costumeNumber = null;
+                costume.CurrentFrameNumber = 1;
+                costume.elapsedFrameSeconds = 0.0f;
             }
         }
 
@@ -254,17 +256,18 @@ namespace ScratchyXna
         /// <param name="costumeName"></param>
         public Costume AddCostume(string costumeName)
         {
-            return AddCostume(costumeName, 1, 1);
+            return AddCostume(costumeName, 1, 1, 1.0f);
         }
 
         /// <summary>
         /// Get a costume ready to use
         /// </summary>
         /// <param name="costumeName"></param>
-        public Costume AddCostume(string costumeName, int frameColumns, int frameRows)
+        public Costume AddCostume(string costumeName, int frameColumns, int frameRows, float frameSeconds)
         {
             // Use the shared content loader
             Costume costume = Game.LoadCostume(costumeName, frameColumns, frameRows);
+            costume.FrameSeconds = frameSeconds;
             costume.XCenter = this.xCenter;
             costume.YCenter = this.yCenter;
 
@@ -384,23 +387,6 @@ namespace ScratchyXna
             Costume.UpdateCostume(gameTime);
             UpdateGraphicObject(gameTime);
         }
-
-        /// <summary>
-        /// Number of seconds for all frames in all costumes
-        /// </summary>
-        public float FrameSeconds
-        {
-            get
-            {
-                return Costumes[0].FrameSeconds;
-            }
-            set
-            {
-                Costumes.ForEach(c => c.FrameSeconds = value);
-            }
-        }
-
-
 
         /// <summary>
         /// Move in the current direction by some distance
