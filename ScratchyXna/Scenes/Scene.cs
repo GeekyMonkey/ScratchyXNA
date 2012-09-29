@@ -225,6 +225,7 @@ namespace ScratchyXna
                 SceneToShow.PreviousScene = Game.activeGameScene;
             }
             Game.activeGameScene = SceneToShow;
+            Game.TouchInput.Clear();
             Game.activeGameScene.StartGameScene();
         }
 

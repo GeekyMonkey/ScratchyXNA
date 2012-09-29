@@ -24,6 +24,12 @@ namespace ScratchyXna
 #endif
         }
 
+        public void Clear()
+        {
+            Gestures.Clear();
+            taps = null;
+        }
+
         /// <summary>
         /// Update each game loop
         /// </summary>
@@ -33,7 +39,7 @@ namespace ScratchyXna
             TouchState = TouchPanel.GetState();
 
             // Clear the Gesture buffer from last update, so we don't act on it again.
-            Gestures.Clear();
+            Clear();
  
             // Add all the stored gestures from the TouchPanel in the Gestures List.
             while (TouchPanel.IsGestureAvailable)
