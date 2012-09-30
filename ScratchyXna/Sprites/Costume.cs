@@ -24,12 +24,17 @@ namespace ScratchyXna
         // private Sprite sprite;
 
         /// <summary>
-        /// The current frame index
+        /// The current frame number
         /// </summary>
         private int currentFrameNumber = 1;
 
         /// <summary>
         /// The current frame index
+        /// </summary>
+        private int currentFrameIndex = 1;
+
+        /// <summary>
+        /// The current frame number
         /// </summary>
         public int CurrentFrameNumber
         {
@@ -40,6 +45,21 @@ namespace ScratchyXna
             set
             {
                 currentFrameNumber = value;
+            }
+        }
+
+        /// <summary>
+        /// The current frame index
+        /// </summary>
+        public int CurrentFrameIndex
+        {
+            get
+            {
+                return currentFrameIndex;
+            }
+            set
+            {
+                currentFrameIndex = value;
             }
         }
 
@@ -105,19 +125,21 @@ namespace ScratchyXna
         {
             if (animation != null)
             {
-                CurrentFrameNumber++;
-                if (CurrentFrameNumber > animation.Frames.Count())
+                CurrentFrameIndex++;
+                if (CurrentFrameIndex > animation.Frames.Count())
                 {
-                    CurrentFrameNumber = 1;
+                    CurrentFrameIndex = 1;
                 }
+                CurrentFrameNumber = animation.Frames[currentFrameIndex - 1].Number;
             }
             else
             {
-                CurrentFrameNumber++;
-                if (CurrentFrameNumber > this.FrameCount)
+                CurrentFrameIndex++;
+                if (CurrentFrameIndex > this.FrameCount)
                 {
-                    CurrentFrameNumber = 1;
+                    CurrentFrameIndex = 1;
                 }
+                CurrentFrameNumber = CurrentFrameIndex;
             }
         }
 
@@ -365,14 +387,14 @@ namespace ScratchyXna
             {
                 float elapsedSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 elapsedFrameSeconds += elapsedSeconds;
-                float currentFrameTime = animation.Frames[CurrentFrameNumber - 1].Seconds / AnimationSpeed;
+                float currentFrameTime = animation.Frames[CurrentFrameIndex - 1].Seconds / AnimationSpeed;
                 bool lastFrame = false;
                 while (elapsedFrameSeconds > currentFrameTime && lastFrame == false)
                 {
                     elapsedFrameSeconds -= currentFrameTime;
                     NextFrame();
-                    lastFrame = (currentFrameNumber == animation.FrameCount);
-                    currentFrameTime = animation.Frames[CurrentFrameNumber - 1].Seconds;
+                    lastFrame = (currentFrameIndex == animation.FrameCount);
+                    currentFrameTime = animation.Frames[CurrentFrameIndex - 1].Seconds;
                 }
                 if (lastFrame)
                 {
@@ -436,6 +458,7 @@ namespace ScratchyXna
 
         public Costume StartAnimation(Animation animation)
         {
+            CurrentFrameIndex = 1;
             this.animation = animation;
             elapsedFrameSeconds = 0;
             return this;
