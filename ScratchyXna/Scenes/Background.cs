@@ -189,6 +189,38 @@ namespace ScratchyXna
             }
         }
 
+        public float MaxX
+        {
+            get
+            {
+                return MaxScrollX + scene.Width / 2f;
+            }
+        }
+
+        public float MinX
+        {
+            get
+            {
+                return MinScrollX - scene.Width / 2f;
+            }
+        }
+
+        public float MaxY
+        {
+            get
+            {
+                return MaxScrollY + scene.Height / 2f;
+            }
+        }
+
+        public float MinY
+        {
+            get
+            {
+                return MaxScrollY - scene.Height / 2f;
+            }
+        }
+
 
     }
 }
