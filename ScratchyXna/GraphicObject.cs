@@ -243,7 +243,23 @@ namespace ScratchyXna
         /// <summary>
         /// The game
         /// </summary>
-        public ScratchyXnaGame Game;
+        public ScratchyXnaGame Game
+        {
+            //todo: is this needed as a property, or should it just point to the global
+            get
+            {
+                if (game == null)
+                {
+                    game = ScratchyXnaGame.ScratchyGame;
+                }
+                return game;
+            }
+            set
+            {
+                game = value;
+            }
+        }
+        private ScratchyXnaGame game;
 
         internal void UpdateGraphicObject(GameTime gameTime)
         {
