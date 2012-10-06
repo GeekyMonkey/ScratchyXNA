@@ -94,6 +94,16 @@ namespace ScratchyXna
         public float MaxX;
 
         /// <summary>
+        /// Scene height in scene units
+        /// </summary>
+        public float Height = 200f;
+
+        /// <summary>
+        /// Scene width in scene units
+        /// </summary>
+        public float Width;
+
+        /// <summary>
         /// The timer used for this scene
         /// </summary>
         private ScratchyXna.Timer timer = null;
@@ -375,6 +385,7 @@ namespace ScratchyXna
             PixelScale = 200f / (float)Graphics.Viewport.Height;
             MaxX = (PixelScale * (float)Graphics.Viewport.Width) / 2f;
             MinX = MaxX * -1f;
+            Width = MaxX - MinX;
         }
 
         /// <summary>

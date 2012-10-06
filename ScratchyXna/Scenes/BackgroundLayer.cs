@@ -48,22 +48,22 @@ namespace ScratchyXna
         /// <summary>
         /// Get the width of the costume
         /// </summary>
-        public int Width
+        public float Width
         {
             get
             {
-                return Texture.Width;
+                return Texture.Width * Scale;
             }
         }
 
         /// <summary>
         /// Get the height of the costume
         /// </summary>
-        public int Height
+        public float Height
         {
             get
             {
-                return Texture.Height;
+                return Texture.Height * Scale;
             }
         }
 
@@ -159,7 +159,7 @@ namespace ScratchyXna
         /// </summary>
         public float ScaleToScreenHeight()
         {
-            Scale = 200f / Height;
+            Scale = 200f / Texture.Height;
             return Scale;
         }
 
@@ -168,7 +168,7 @@ namespace ScratchyXna
         /// </summary>
         public float ScaleToScreenWidth()
         {
-            Scale = (this.background.scene.MaxX - this.background.scene.MinX) / Width;
+            Scale = (this.background.scene.MaxX - this.background.scene.MinX) / Texture.Width;
             return Scale;
         }
 
@@ -227,7 +227,10 @@ namespace ScratchyXna
         {
             if (Visible && Texture != null)
             {
-                Vector2 screenPos = Scene.GetScreenPosition(Position);
+                Vector2 pos = Position;
+                pos.X += ScrollOffset.X;
+                pos.Y += ScrollOffset.Y;
+                Vector2 screenPos = Scene.GetScreenPosition(pos);
                 Drawing.Draw(this.Texture,
                     screenPos,
                     null,
@@ -248,5 +251,55 @@ namespace ScratchyXna
         {
         }
 
+        public Vector2 ScrollOffset = Vector2.Zero;
+
+        public void SetScrollX(double x)
+        {
+            ScrollOffset.X = (float)x;
+            foreach (var otherLayer in OtherLayers)
+            {
+                otherLayer.ScrollOffset.X = (float) x * ((otherLayer.Width - Scene.Width) / (this.Width - Scene.Width));
+            }
+        }
+
+        public float MaxScrollX
+        {
+            get
+            {
+                return Position.X + (Width / 2f) - (Scene.Width / 2f);
+            }
+        }
+
+        public float MinScrollX
+        {
+            get
+            {
+                return Position.X - (Width / 2f) + (Scene.Width / 2f);
+            }
+        }
+
+        public float MaxScrollY
+        {
+            get
+            {
+                return Position.Y + (Height / 2f) - (Scene.Height / 2f);
+            }
+        }
+
+        public float MinScrollY
+        {
+            get
+            {
+                return Position.Y - (Height / 2f) + (Scene.Height / 2f);
+            }
+        }
+
+        public IEnumerable<BackgroundLayer> OtherLayers
+        {
+            get
+            {
+                return this.background.Layers.Where(l => l != this);
+            }
+        }
     }
 }

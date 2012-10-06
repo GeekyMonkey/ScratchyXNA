@@ -421,7 +421,13 @@ namespace ScratchyXna
         /// <param name="Drawing">Sprite drawing context</param>
         public virtual void Draw(SpriteBatch Drawing)
         {
-            Vector2 screenPos = Scene.GetScreenPosition(Position);
+            Vector2 pos = Position;
+            if (backgroundLayer != null)
+            {
+                pos.X += backgroundLayer.ScrollOffset.X;
+                pos.Y += backgroundLayer.ScrollOffset.Y;
+            }
+            Vector2 screenPos = Scene.GetScreenPosition(pos);
             Drawing.Draw(Costume.Texture,
                 screenPos,
                 null,
@@ -1020,5 +1026,18 @@ namespace ScratchyXna
             return newPixels;
         }
 
+        private BackgroundLayer backgroundLayer;
+
+        public BackgroundLayer BackgroundLayer
+        {
+            get
+            {
+                return this.backgroundLayer;
+            }
+            set
+            {
+                this.backgroundLayer = value;
+            }
+        }
     }
 }

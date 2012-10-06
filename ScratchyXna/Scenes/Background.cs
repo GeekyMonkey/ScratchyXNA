@@ -15,6 +15,7 @@ namespace ScratchyXna
         /// </summary>
         public List<BackgroundLayer> Layers = new List<BackgroundLayer>();
         internal Scene scene;
+        int scrollControlLayer = 1;
 
         /// <summary>
         /// Constructor
@@ -27,6 +28,21 @@ namespace ScratchyXna
         internal void Init(Scene scene)
         {
             this.scene = scene;
+        }
+
+        /// <summary>
+        /// The layer that's controlling the scrolling
+        /// </summary>
+        public int ScrollControlLayer
+        {
+            get
+            {
+                return scrollControlLayer;
+            }
+            set
+            {
+                scrollControlLayer = value;
+            }
         }
 
         /// <summary>
@@ -127,5 +143,52 @@ namespace ScratchyXna
             Layers.Add(newLayer);
             return newLayer;
         }
+
+        public void SetScrollX(double x)
+        {
+            if (x > MaxScrollX)
+            {
+                x = MaxScrollX;
+            }
+            else if (x < MinScrollX)
+            {
+                x = MinScrollX;
+            }
+            Layers[ScrollControlLayer - 1].SetScrollX(x);
+        }
+
+        public float MaxScrollX
+        {
+            get
+            {
+                return Layers.Max(l => l.MaxScrollX);
+            }
+        }
+
+        public float MinScrollX
+        {
+            get
+            {
+                return Layers.Min(l => l.MinScrollX);
+            }
+        }
+
+        public float MaxScrollY
+        {
+            get
+            {
+                return Layers.Max(l => l.MaxScrollY);
+            }
+        }
+
+        public float MinScrollY
+        {
+            get
+            {
+                return Layers.Min(l => l.MinScrollY);
+            }
+        }
+
+
     }
 }
