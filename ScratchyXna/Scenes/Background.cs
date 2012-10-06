@@ -157,6 +157,14 @@ namespace ScratchyXna
             Layers[ScrollControlLayer - 1].SetScrollX(x);
         }
 
+        public float Width
+        {
+            get
+            {
+                return MaxX - MinX;
+            }
+        }
+
         public float MaxScrollX
         {
             get

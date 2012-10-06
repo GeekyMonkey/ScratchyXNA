@@ -258,7 +258,7 @@ namespace ScratchyXna
             ScrollOffset.X = (float)x;
             foreach (var otherLayer in OtherLayers)
             {
-                otherLayer.ScrollOffset.X = (float) x * ((otherLayer.Width - Scene.Width) / (this.Width - Scene.Width));
+                otherLayer.ScrollOffset.X = (float) x * ((otherLayer.Width - Scene.Width) / (this.background.Width - Scene.Width));
             }
         }
 
