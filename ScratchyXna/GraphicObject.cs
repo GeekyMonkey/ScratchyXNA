@@ -240,6 +240,16 @@ namespace ScratchyXna
             }
         }
 
+        public void VelocityAdd(Vector2 otherVelocity)
+        {
+            Velocity = new Vector2(Velocity.X + otherVelocity.X, Velocity.Y + otherVelocity.Y);        
+        }
+                            
+        public void VelocityAddGravity(float GravityStrength, GameTime gameTime)
+        {
+            this.VelocityAdd(new Vector2(0, GravityStrength * (float)gameTime.ElapsedGameTime.TotalSeconds));
+        }
+
         /// <summary>
         /// The game
         /// </summary>
