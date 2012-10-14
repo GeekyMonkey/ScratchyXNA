@@ -229,8 +229,11 @@ namespace ScratchyXna
             {
                 costume = value;
                 costumeNumber = null;
-                costume.CurrentFrameNumber = 1;
-                costume.elapsedFrameSeconds = 0.0f;
+                if (costume != null)
+                {
+                    costume.CurrentFrameNumber = 1;
+                    costume.elapsedFrameSeconds = 0.0f;
+                }
             }
         }
 
