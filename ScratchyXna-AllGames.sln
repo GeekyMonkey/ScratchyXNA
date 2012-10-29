@@ -1,14 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2010
+# Visual Studio 2010 Express for Windows Phone
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScratchyXna", "ScratchyXna\ScratchyXna.csproj", "{492B5EA4-BDB7-4088-91BA-94FB6AE7CAF2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScratchyXnaPhone", "ScratchyXnaPhone\ScratchyXnaPhone.csproj", "{76704345-239A-4884-A450-5C1AF4017D3E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{492B5EA4-BDB7-4088-91BA-94FB6AE7CAF2} = {492B5EA4-BDB7-4088-91BA-94FB6AE7CAF2}
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScratchyXnaTests", "ScratchyXnaTests\ScratchyXnaTests.csproj", "{7E755F43-652A-4A27-8392-8BE9749E1E74}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScratchyDerby", "..\ScratchyDerby\ScratchyDerby\ScratchyDerby.csproj", "{19062A8F-6048-4B3C-88A8-0A537DB80FCB}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -74,18 +72,6 @@ Global
 		{76704345-239A-4884-A450-5C1AF4017D3E}.Release|Windows Phone.Build.0 = Release|Windows Phone
 		{76704345-239A-4884-A450-5C1AF4017D3E}.Release|x86.ActiveCfg = Release|Windows Phone
 		{76704345-239A-4884-A450-5C1AF4017D3E}.Release|x86.Build.0 = Release|Windows Phone
-		{7E755F43-652A-4A27-8392-8BE9749E1E74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7E755F43-652A-4A27-8392-8BE9749E1E74}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7E755F43-652A-4A27-8392-8BE9749E1E74}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{7E755F43-652A-4A27-8392-8BE9749E1E74}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{7E755F43-652A-4A27-8392-8BE9749E1E74}.Debug|Windows Phone.ActiveCfg = Debug|Any CPU
-		{7E755F43-652A-4A27-8392-8BE9749E1E74}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7E755F43-652A-4A27-8392-8BE9749E1E74}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7E755F43-652A-4A27-8392-8BE9749E1E74}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7E755F43-652A-4A27-8392-8BE9749E1E74}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{7E755F43-652A-4A27-8392-8BE9749E1E74}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{7E755F43-652A-4A27-8392-8BE9749E1E74}.Release|Windows Phone.ActiveCfg = Release|Any CPU
-		{7E755F43-652A-4A27-8392-8BE9749E1E74}.Release|x86.ActiveCfg = Release|Any CPU
 		{19062A8F-6048-4B3C-88A8-0A537DB80FCB}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{19062A8F-6048-4B3C-88A8-0A537DB80FCB}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{19062A8F-6048-4B3C-88A8-0A537DB80FCB}.Debug|Mixed Platforms.Build.0 = Debug|x86
