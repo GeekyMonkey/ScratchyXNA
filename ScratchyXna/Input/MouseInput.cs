@@ -55,7 +55,7 @@ namespace ScratchyXna
         internal void Init()
         {
 #if XBOX
-            previousState = new ScratchyMouseState();
+            previousState = currentState = new ScratchyMouseState();
 #else
             previousState = currentState = new ScratchyMouseState(Mouse.GetState());
 #endif

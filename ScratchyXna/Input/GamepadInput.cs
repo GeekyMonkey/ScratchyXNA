@@ -31,7 +31,7 @@ namespace ScratchyXna
             for (int i = 0; i < 4; i++)
             {
                 previousState[i] = currentState [i];
-                previousState[i] = currentState[i] = GamePad.GetState(ToPlayerIndex(i+1));
+                currentState[i] = GamePad.GetState(ToPlayerIndex(i+1));
             }
         }
 
@@ -53,7 +53,7 @@ namespace ScratchyXna
         /// <returns></returns>
         private PlayerIndex ToPlayerIndex(int playerNumber)
         {
-            return (PlayerIndex)playerNumber - 1;
+            return (PlayerIndex)playerNumber-1;
         }
 
         /// <summary>

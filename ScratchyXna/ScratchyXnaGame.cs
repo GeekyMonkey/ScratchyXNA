@@ -31,6 +31,7 @@ namespace ScratchyXna
         public KeyboardInput KeyboardInput = new KeyboardInput();
         public MouseInput MouseInput = new MouseInput();
         public TouchInput TouchInput = new TouchInput();
+        public GamepadInput GamepadInput = new GamepadInput();
         public AccelerometerInput AccelerometerInput = new AccelerometerInput();
         public GyroscopeInput GyroscopeInput = new GyroscopeInput();
         public float SpeedMultiplier = 100f;
@@ -99,6 +100,7 @@ namespace ScratchyXna
             TouchInput.Init();
             KeyboardInput.Init();
             MouseInput.Init();
+            GamepadInput.Init();
             AccelerometerInput.Init();
             GyroscopeInput.Init();
 
@@ -422,6 +424,7 @@ namespace ScratchyXna
             }
 
             KeyboardInput.Update();
+            GamepadInput.Update();
 #if !XBox
             MouseInput.Update();
             TouchInput.Update();

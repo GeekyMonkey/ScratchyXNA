@@ -46,6 +46,17 @@ namespace ScratchyXna
         }
 
         /// <summary>
+        /// The Game's gamepad input
+        /// </summary>
+        public GamepadInput Gamepad
+        {
+            get
+            {
+                return ScratchyXnaGame.ScratchyGame.GamepadInput;
+            }
+        }
+
+        /// <summary>
         /// The Game's Gyroscope input
         /// </summary>
         public GyroscopeInput Gyroscope
