@@ -57,6 +57,7 @@
     <Compile Include="Enumerations\StampMethods.cs" />
     <Compile Include="Enumerations\StampCroppings.cs" />
     <Compile Include="Input\AccelerometerInput.cs" />
+    <Compile Include="Input\GamepadInput.cs" />
     <Compile Include="Input\GyroscopeInput.cs" />
     <Compile Include="Input\TouchInput.cs" />
     <Compile Include="Scenes\Background.cs" />

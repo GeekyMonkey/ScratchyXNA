@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
+#if !XBOX
 using Microsoft.Xna.Framework.Input.Touch;
+#endif
 #if WINDOWS_PHONE
 using Microsoft.Devices.Sensors;
 #endif

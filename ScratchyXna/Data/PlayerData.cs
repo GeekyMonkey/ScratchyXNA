@@ -120,7 +120,7 @@ namespace ScratchyXna
         /// </summary>
         public void Save()
         {
-#if WINDOWS_PHONE
+#if WINDOWS_PHONE || XBOX
             IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForApplication();
 #else
             IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForDomain();
@@ -156,7 +156,7 @@ namespace ScratchyXna
         /// </summary>
         public void Load()
         {
-#if WINDOWS_PHONE
+#if WINDOWS_PHONE || XBOX
             IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForApplication();
 #else
             IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForDomain();

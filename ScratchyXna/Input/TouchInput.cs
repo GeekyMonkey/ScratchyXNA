@@ -4,14 +4,18 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
+#if !XBOX
 using Microsoft.Xna.Framework.Input.Touch;
+#endif
 
 namespace ScratchyXna
 {
     public class TouchInput
     {
+#if !XBOX
         private TouchCollection TouchState;
         public readonly List<GestureSample> Gestures = new List<GestureSample>();
+#endif
         private List<Vector2> taps;
 
         /// <summary>
@@ -26,7 +30,9 @@ namespace ScratchyXna
 
         public void Clear()
         {
+#if !XBOX
             Gestures.Clear();
+#endif
             taps = null;
         }
 
@@ -59,10 +65,12 @@ namespace ScratchyXna
                 if (taps == null)
                 {
                     taps = new List<Vector2>();
+#if !XBOX
                     foreach (var tap in Gestures.Where(g => g.GestureType == GestureType.Tap))
                     {
                         taps.Add(ScratchyXnaGame.ScratchyGame.activeGameScene.PixelToPosition((int)tap.Position.X, (int)tap.Position.Y));
                     }
+#endif
                 }
                 return taps;
             }
