@@ -390,7 +390,7 @@ namespace ScratchyXna
             this.gameTime = gameTime;
 
             // Allows the game to exit
-            if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed) || KeyboardInput.KeyPressed(Keys.Escape))
+            if (GamepadInput.ButtonPressed(1, Buttons.Back) || KeyboardInput.KeyPressed(Keys.Escape))
             {
                 switch (activeGameScene.BackButtonBehaviour)
                 {

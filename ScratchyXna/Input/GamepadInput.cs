@@ -56,14 +56,44 @@ namespace ScratchyXna
             return (PlayerIndex)playerNumber-1;
         }
 
+        public GamePadButtons GetButtons(int playerNumber)
+        {
+            return currentState[playerNumber - 1].Buttons;
+        }
+
+        public GamePadDPad GetDPad(int playerNumber)
+        {
+            return currentState[playerNumber - 1].DPad;
+        }
+
+        public Vector2 GetLeftThumbStick(int playerNumber)
+        {
+            return currentState[playerNumber - 1].ThumbSticks.Left;
+        }
+
+        public Vector2 GetRightThumbStick(int playerNumber)
+        {
+            return currentState[playerNumber - 1].ThumbSticks.Right;
+        }
+
+        public float GetLeftTrigger(int playerNumber)
+        {
+            return currentState[playerNumber - 1].Triggers.Left;
+        }
+
+        public float GetRightTrigger(int playerNumber)
+        {
+            return currentState[playerNumber - 1].Triggers.Right;
+        }
+
         /// <summary>
         /// Was the button pressed since the last update
         /// </summary>
         /// <param name="key">Button to check</param>
         /// <returns>True if previously up, but now down</returns>
-        public bool IsButtonPressed(int playerNumber, Buttons button)
+        public bool ButtonPressed(int playerNumber, Buttons button)
         {
-            return previousState[playerNumber - 1].IsButtonUp(button) && IsButtonDown(playerNumber, button);
+            return previousState[playerNumber - 1].IsButtonUp(button) && ButtonDown(playerNumber, button);
         }
 
         /// <summary>
@@ -71,9 +101,9 @@ namespace ScratchyXna
         /// </summary>
         /// <param name="key">Button to check</param>
         /// <returns>True if previously down, but now up</returns>
-        public bool IsButtonReleased(int playerNumber, Buttons button)
+        public bool ButtonReleased(int playerNumber, Buttons button)
         {
-            return previousState[playerNumber - 1].IsButtonDown(button) && IsButtonUp(playerNumber, button);
+            return previousState[playerNumber - 1].IsButtonDown(button) && ButtonUp(playerNumber, button);
         }
 
         /// <summary>
@@ -81,7 +111,7 @@ namespace ScratchyXna
         /// </summary>
         /// <param name="key">Key to check</param>
         /// <returns>True if the key is down</returns>
-        public bool IsButtonDown(int playerNumber, Buttons button)
+        public bool ButtonDown(int playerNumber, Buttons button)
         {
             return currentState[playerNumber-1].IsButtonDown(button);
         }
@@ -91,7 +121,7 @@ namespace ScratchyXna
         /// </summary>
         /// <param name="key">Button to check</param>
         /// <returns>True if the Button is up</returns>
-        public bool IsButtonUp(int playerNumber, Buttons button)
+        public bool ButtonUp(int playerNumber, Buttons button)
         {
             return currentState[playerNumber - 1].IsButtonUp(button);
         }
