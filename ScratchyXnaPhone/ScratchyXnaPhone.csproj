@@ -90,6 +90,9 @@
     <Compile Include="..\ScratchyXna\Input\AccelerometerInput.cs">
       <Link>Input\AccelerometerInput.cs</Link>
     </Compile>
+    <Compile Include="..\ScratchyXna\Input\GamepadInput.cs">
+      <Link>Input\GamepadInput.cs</Link>
+    </Compile>
     <Compile Include="..\ScratchyXna\Input\GyroscopeInput.cs">
       <Link>Input\GyroscopeInput.cs</Link>
     </Compile>
