@@ -82,10 +82,11 @@ namespace ScratchyXna
         /// </summary>
         /// <param name="width">Screen width in pixels</param>
         /// <param name="height">Screen height in pixels</param>
-        public void SetScreenSize(float width, float height)
+        public void SetScreenSize(float width, float height, bool fullScreen)
         {
             graphics.PreferredBackBufferHeight = (int)height;
             graphics.PreferredBackBufferWidth = (int)width;
+            graphics.IsFullScreen = fullScreen;
             graphics.ApplyChanges();
         }
 
