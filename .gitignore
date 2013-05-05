@@ -5,3 +5,9 @@
 TestResults
 bin
 obj
+!ScratchyMonoGame/Packages/MonoGame/Android/*.dll
+!ScratchyMonoGame/Packages/MonoGame/Linux/*.dll
+!ScratchyMonoGame/Packages/MonoGame/OUYA/*.dll
+!ScratchyMonoGame/Packages/MonoGame/Windows8/*.dll
+!ScratchyMonoGame/Packages/MonoGame/WindowsGL/*.dll
+!ScratchyMonoGame/Packages/MonoGame/WindowsPhone/*.dll
