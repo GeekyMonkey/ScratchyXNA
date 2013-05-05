@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BA07FBA4-F106-417F-B0B1-B34426E96BA7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ScratchyMonoGame</RootNamespace>
+    <AssemblyName>ScratchyMonoGame</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;MONO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Packages\MonoGame\WindowsGL\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\ScratchyXna\Data\PlayerData.cs">
+      <Link>Data\PlayerData.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Enumerations\Alignment.cs">
+      <Link>Enumerations\Alignment.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Enumerations\BackButtonBehaviours.cs">
+      <Link>Enumerations\BackButtonBehaviours.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Enumerations\EnumerationExtensions.cs">
+      <Link>Enumerations\EnumerationExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Enumerations\GamePlatforms.cs">
+      <Link>Enumerations\GamePlatforms.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Enumerations\GridStyles.cs">
+      <Link>Enumerations\GridStyles.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Enumerations\StampCroppings.cs">
+      <Link>Enumerations\StampCroppings.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Enumerations\StampMethods.cs">
+      <Link>Enumerations\StampMethods.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\GraphicObject.cs">
+      <Link>GraphicObject.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Input\AccelerometerInput.cs">
+      <Link>Input\AccelerometerInput.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Input\GamepadInput.cs">
+      <Link>Input\GamepadInput.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Input\GyroscopeInput.cs">
+      <Link>Input\GyroscopeInput.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Input\KeyboardInput.cs">
+      <Link>Input\KeyboardInput.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Input\MouseInput.cs">
+      <Link>Input\MouseInput.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Input\TouchInput.cs">
+      <Link>Input\TouchInput.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Scenes\Background.cs">
+      <Link>Scenes\Background.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Scenes\BackgroundLayer.cs">
+      <Link>Scenes\BackgroundLayer.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Scenes\Scene.cs">
+      <Link>Scenes\Scene.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\ScratchyObject.cs">
+      <Link>ScratchyObject.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\ScratchyXnaGame.cs">
+      <Link>ScratchyXnaGame.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Sprites\Animation.cs">
+      <Link>Sprites\Animation.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Sprites\AnimationFrame.cs">
+      <Link>Sprites\AnimationFrame.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Sprites\Costume.cs">
+      <Link>Sprites\Costume.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Sprites\IDrawable.cs">
+      <Link>Sprites\IDrawable.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Sprites\Sprite.cs">
+      <Link>Sprites\Sprite.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Text\Text.cs">
+      <Link>Text\Text.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Text\TextAnimations.cs">
+      <Link>Text\TextAnimations.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Text\TextSprite.cs">
+      <Link>Text\TextSprite.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Time\ScheduledEvent.cs">
+      <Link>Timer\ScheduledEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\Time\Timer.cs">
+      <Link>Timer\Timer.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\XnaHelpers\LinqExtensions.cs">
+      <Link>XnaHelpers\LinqExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\XnaHelpers\MatrixExtensions.cs">
+      <Link>XnaHelpers\MatrixExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\ScratchyXna\XnaHelpers\RectangleF.cs">
+      <Link>XnaHelpers\RectangleF.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
